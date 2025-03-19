@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title', 'Cadastrar Funcionário'); ?>
 
 <?php $__env->startSection('content_header'); ?>
@@ -15,25 +13,18 @@
         </div>
 
         <div class="form-group">
-    <label for="matricula">Matrícula</label>
-    <input type="text" name="matricula" class="form-control" value="<?php echo e(old('matricula', $funcionario->matricula ?? '')); ?>" required>
-</div>
+            <label for="matricula">Matrícula</label>
+            <input type="text" name="matricula" class="form-control" value="<?php echo e(old('matricula')); ?>" required>
+        </div>
 
         <div class="form-group">
-            <label for="cargo">Cargo</label>
-            <select id="cargo" name="cargo" class="form-control" required>
-                <option value="assistente_educacao">Assistente de Educação</option>
-                <option value="auxiliar_cozinha">Auxiliar de Cozinha</option>
-                <option value="diretor">Diretor</option>
-                <option value="escriturario">Escriturário</option>
-                <option value="estagiario">Estagiário</option>
-                <option value="merendeira">Merendeira</option>
-                <option value="pedagoga">Pedagoga</option>
-                <option value="professor_20h">Professor 20h</option>
-                <option value="professor_40h">Professor 40h</option>
-                <option value="servente_escolar">Servente Escolar</option>
-            </select>
-        </div>
+    <label for="cargo">Cargo</label>
+    <select id="cargo" name="cargo_id" class="form-control" required>
+        <?php $__currentLoopData = $cargos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $cargo): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <option value="<?php echo e($cargo->id); ?>"><?php echo e(ucfirst(str_replace('_', ' ', $cargo->nome))); ?></option>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    </select>
+</div>
 
         <div class="form-group">
             <label for="tipo_funcionario">Tipo de Funcionário</label>
