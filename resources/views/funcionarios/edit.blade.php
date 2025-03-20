@@ -10,7 +10,7 @@
     <form action="{{ isset($funcionario) ? route('funcionarios.update', $funcionario->id) : route('funcionarios.store') }}" method="POST">
         @csrf
         @if(isset($funcionario))
-            @method('PUT') <!-- Necessário para atualizar -->
+            @method('PUT') <!-- Necessário para atualização -->
         @endif
         
         <div class="form-group">
@@ -28,10 +28,20 @@
             <select id="cargo_id" name="cargo_id" class="form-control" required>
                 @foreach($cargos as $cargo)
                     <option value="{{ $cargo->id }}"
-                        @if(old('cargo_id', $funcionario->cargo_id ?? '') == $cargo->id) selected @endif>
+                        @if(old('cargo_id', $funcionario->cargo_id ?? '') == $cargo->id) selected @endif
+                        data-nome="{{ $cargo->nome }}">
                         {{ $cargo->nome }}
                     </option>
                 @endforeach
+            </select>
+        </div>
+
+        <div class="form-group" id="turno-group">
+            <label for="turno">Turno</label>
+            <select id="turno" name="turno_id" class="form-control" required>
+                <option value="1" @if(old('turno_id', $funcionario->turno_id ?? 3) == 3) selected @endif>Integral</option>
+                <option value="2" @if(old('turno_id', $funcionario->turno_id ?? '') == 1) selected @endif>Manhã</option>
+                <option value="3" @if(old('turno_id', $funcionario->turno_id ?? '') == 2) selected @endif>Tarde</option>
             </select>
         </div>
 
@@ -53,4 +63,42 @@
     <div class="float-right d-none d-sm-inline-block">
         <b>Version</b> 1.0.0
     </div>
+@stop
+
+@section('js')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    var cargoSelect = document.getElementById('cargo_id');
+    var turnoGroup = document.getElementById('turno-group');
+    var turnoSelect = document.getElementById('turno');
+
+    function toggleTurnoField() {
+        var selectedCargoId = cargoSelect.options[cargoSelect.selectedIndex].value;
+        
+        if (selectedCargoId === '8') { // Professor 20h
+            turnoGroup.style.display = 'block'; 
+            turnoSelect.innerHTML = ` 
+                <option value="1">Manhã</option>
+                <option value="2">Tarde</option>
+            `;
+
+            // Se o turno atual não for válido, define um padrão
+            if (![1, 2].includes(parseInt(turnoSelect.value))) {
+                turnoSelect.value = "1"; // Manhã como padrão
+            }
+        } else {
+            turnoGroup.style.display = 'none';
+            
+            // Garante que o turno seja enviado corretamente
+            turnoSelect.innerHTML = `
+                <option value="3" selected>Integral</option>
+            `;
+        }
+    }
+
+    toggleTurnoField();
+    cargoSelect.addEventListener('change', toggleTurnoField);
+});
+
+</script>
 @stop

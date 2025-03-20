@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Providers;
+use App\Models\Funcionario;
+use App\Observers\FuncionarioObserver;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -20,5 +22,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         //
+
+       Funcionario::observe(FuncionarioObserver::class);
     }
 }

@@ -8,6 +8,9 @@ use App\Http\Controllers\CienciaController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\TurmaProfessorController;
 
+use App\Http\Controllers\DisciplinaController;
+use App\Http\Controllers\DisciplinaProfessorController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -66,7 +69,12 @@ Route::resource('turmas', TurmaController::class);
 
 
 
-Route::resource('turma_professor', TurmaProfessorController::class);
+
+Route::resource('disciplinas', DisciplinaController::class);
+
+
+
+
 
 
 /*

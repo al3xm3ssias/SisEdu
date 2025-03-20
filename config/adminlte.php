@@ -347,25 +347,23 @@ return [
         [
             'text' => 'Turmas',
             'url'  => '/turmas',
-            'icon' => 'fas fa-fw fa-book',
+            'icon' => 'fas fa-fw fa-school',
         ],
 
         [
-            'text' => 'Turmas-Professores',
-            'url'  => '/turma_professor',
-            'icon' => 'fa fa-university'
+            'text' => 'Disciplinas',
+            'url'  => '/disciplinas',
+            'icon' => 'fas fa-fw fa-book',
         ],
+
+        
       
-        [
-            'text' => 'Baixar CSV',
-            'url'  => '/painel',
-            'icon' => 'fas fa-file-csv',
-        ],
+       
        
 
         [
             'text'        => 'Ciências',
-            'icon'        => 'fas fa-book',
+            'icon'        => 'fas fa-pdf',
             'url'         => '#', // Esse '#' é só um link de placeholder
             'submenu' => [ // Aqui começa o submenu
                 [

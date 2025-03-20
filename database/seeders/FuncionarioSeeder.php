@@ -4,45 +4,76 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Funcionario;
-use Faker\Factory as Faker;
-use Illuminate\Support\Str;
 
 class FuncionarioSeeder extends Seeder
 {
     public function run()
     {
-        // Instanciando o Faker
-        $faker = Faker::create();
+        // Inserir os dados dos funcionários com turnos corretos
 
-        // Gerando 10 funcionários com dados aleatórios
-        foreach (range(1, 50) as $index) {
-            Funcionario::create([
-                'nome' => $faker->name, // Nome aleatório
-                'matricula' => $faker->numberBetween(100000, 999999), // Matrícula aleatória e única
-                'cargo' => $this->getRandomCargo(), // Cargo aleatório
-                'tipo_funcionario' => $faker->boolean, // Tipo de funcionário aleatório (0 ou 1)
-                'id_unico' => (string) Str::uuid(), // Gerando o id único
-            ]);
-        }
-    }
+        // Claudio: Escriturário e Integral
+        Funcionario::create([
+            'matricula' => '30627',
+            'nome' => 'CLAUDIO ALEX MESSIAS DA ROSA',
+            'cargo_id' => 4, // Escriturário
+            'tipo_funcionario' => 0, // Concursado
+            'turno_id' => 3, // Turno Integral (ID do turno Integral)
+        ]);
 
-    // Função para obter um cargo aleatório
-    private function getRandomCargo()
-    {
-        $cargos = [
-            'assistente_educacao' => 'Assistente de Educação',
-            'auxiliar_cozinha' => 'Auxiliar de Cozinha',
-            'diretor' => 'Diretor',
-            'escriturario' => 'Escriturário',
-            'estagiario' => 'Estagiário',
-            'merendeira' => 'Merendeira',
-            'pedagoga' => 'Pedagoga',
-            'professor_20h' => 'Professor 20h',
-            'professor_40h' => 'Professor 40h',
-            'servente_escolar' => 'Servente Escolar'
-        ];
+        // Elci: Professor 20h Manhã
+        Funcionario::create([
+            'matricula' => '12967',
+            'nome' => 'ELCI CRISTINA KRUGER',
+            'cargo_id' => 8, // Professor 20h
+            'tipo_funcionario' => 0, // Concursado
+            'turno_id' => 1, // Turno Integral (ID do turno Integral)
+        ]);
 
-        // Retorna um cargo aleatório
-        return array_rand($cargos);
+        // Vanessa: Professor 20h Tarde
+        Funcionario::create([
+            'matricula' => '16919',
+            'nome' => 'VANESSA DE FATIMA MACHADO DE PAULA',
+            'cargo_id' => 8, // Professor 20h
+            'tipo_funcionario' => 0, // Concursado
+            'turno_id' => 2, // Turno Integral (ID do turno Integral)
+        ]);
+
+        // Valdemir: Assistente de Educação e Integral
+        Funcionario::create([
+            'matricula' => '31338',
+            'nome' => 'VALDEMIR DAVI DE OLIVEIRA',
+            'cargo_id' => 1, // Assistente de Educação
+            'tipo_funcionario' => 0, // Concursado
+            'turno_id' => 3, // Turno Integral (ID do turno Integral)
+        ]);
+
+        // Ana Paula: Professor 40h e Integral
+        Funcionario::create([
+            'matricula' => '20793',
+            'nome' => 'ANA PAULA HAILE',
+            'cargo_id' => 9, // Professor 40h
+            'tipo_funcionario' => 0, // Concursado
+            'turno_id' => 3, // Turno Integral (ID do turno Integral)
+        ]);
+
+        // Zeneide: Professor 20h e Integral
+        Funcionario::create([
+            'matricula' => '25482',
+            'nome' => 'ZENEIDE PADILHA DE OLIVEIRA',
+            'cargo_id' => 8, // Professor 20h
+            'tipo_funcionario' => 0, // Concursado
+            'turno_id' => 1, // Turno Integral (ID do turno Integral)
+        ]);
+
+        // Priscila: Professor 40h e Integral
+        Funcionario::create([
+            'matricula' => '30440',
+            'nome' => 'PRISCILA FERREIRA DE ANDRADE',
+            'cargo_id' => 9, // Professor 40h
+            'tipo_funcionario' => 0, // Concursado
+            'turno_id' => 3, // Turno Integral (ID do turno Integral)
+        ]);
     }
 }
+
+

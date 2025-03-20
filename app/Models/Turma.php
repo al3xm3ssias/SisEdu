@@ -17,9 +17,9 @@ class Turma extends Model
 
   
     // Defina o relacionamento com o professor
-    public function professores()
+    public function professorTurmaDisciplinas()
     {
-        return $this->belongsToMany(Funcionario::class, 'professor_turma');
+        return $this->hasMany(ProfessorTurmaDisciplina::class);
     }
 }
 

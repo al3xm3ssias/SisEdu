@@ -27,6 +27,7 @@
                 <th>ID</th>
                 <th>Matrícula</th>
                 <th>Nome</th>
+                <th>Turno</th>
                 <th>Cargo</th>
                 <th>Tipo</th>
                 <th>Ações</th>
@@ -38,6 +39,7 @@
                     <td><?php echo e($funcionario->id); ?></td>
                     <td><?php echo e($funcionario->matricula); ?></td>
                     <td><?php echo e($funcionario->nome); ?></td>
+                    <td><?php echo e($funcionario->turno->descricao ?? 'Não atribuído'); ?></td>
                     <td><?php echo e($funcionario->cargo->nome ?? 'Não atribuído'); ?></td>
                     <td><?php echo e($funcionario->tipo_funcionario == 0 ? 'Concursado' : 'Terceirizado'); ?></td>
                     <td>

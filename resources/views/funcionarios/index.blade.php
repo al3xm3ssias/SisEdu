@@ -28,6 +28,7 @@
                 <th>ID</th>
                 <th>Matrícula</th>
                 <th>Nome</th>
+                <th>Turno</th>
                 <th>Cargo</th>
                 <th>Tipo</th>
                 <th>Ações</th>
@@ -39,6 +40,7 @@
                     <td>{{ $funcionario->id }}</td>
                     <td>{{ $funcionario->matricula }}</td>
                     <td>{{ $funcionario->nome }}</td>
+                    <td>{{ $funcionario->turno->descricao ?? 'Não atribuído' }}</td>
                     <td>{{ $funcionario->cargo->nome ?? 'Não atribuído' }}</td>
                     <td>{{ $funcionario->tipo_funcionario == 0 ? 'Concursado' : 'Terceirizado' }}</td>
                     <td>

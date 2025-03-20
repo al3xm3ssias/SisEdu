@@ -13,11 +13,11 @@ return new class extends Migration
 {
     Schema::create('cargos', function (Blueprint $table) {
         $table->id();
-        $table->string('nome')->unique();
+        $table->string('nome');
         $table->timestamps();
     });
 
-    // Inserindo os cargos automaticamente
+/*    // Inserindo os cargos automaticamente
     DB::table('cargos')->insert([
         ['nome' => 'Assistente de Educação'],
         ['nome' => 'Auxiliar de Cozinha'],
@@ -29,7 +29,7 @@ return new class extends Migration
         ['nome' => 'Professor 20h'],
         ['nome' => 'Professor 40h'],
         ['nome' => 'Servente Escolar'],
-    ]);
+    ]); */
 }
 
 public function down()
