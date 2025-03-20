@@ -67,14 +67,14 @@ Route::get('turmas/create', [TurmaController::class, 'create'])->name('turmas.cr
 
 Route::resource('turmas', TurmaController::class);
 
+use App\Http\Controllers\AulaController;
 
+Route::resource('aulas', AulaController::class);
 
 
 Route::resource('disciplinas', DisciplinaController::class);
 
-use App\Http\Controllers\ProfessorController;
 
-Route::resource('professores', ProfessorController::class);
 
 
 
