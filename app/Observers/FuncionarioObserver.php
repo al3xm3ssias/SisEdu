@@ -15,6 +15,9 @@ class FuncionarioObserver
     if (in_array($funcionario->cargo_id, [8, 9])) {
         $professor = new Professor();
         $professor->funcionario_id = $funcionario->id;
+        $professor->nome = $funcionario->nome;
+        $professor->matricula = $funcionario->matricula;
+        
 
         if (!$professor->save()) {
             dd('Erro ao salvar', $professor);

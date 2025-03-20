@@ -14,18 +14,16 @@ class Disciplina extends Model
     protected $table = 'disciplinas'; // Especificando o nome da tabela
     protected $fillable = ['nome'];
 
-    public function professores()
-    {
-        return $this->belongsToMany(Funcionario::class, 'disciplina_professor', 'disciplina_id', 'professor_id')
-                    ->withPivot('carga_horaria')
-                    ->withTimestamps();
+    public function professores() {
+        return $this->belongsToMany(Professor::class);
+    }
+
+    public function turmas() {
+        return $this->belongsToMany(Turma::class);
     }
 
 
 
-    public function professorTurmaDisciplinas()
-    {
-        return $this->hasMany(ProfessorTurmaDisciplina::class);
-    }
+    
 }
 

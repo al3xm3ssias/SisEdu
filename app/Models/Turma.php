@@ -5,23 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Funcionario;
-
-
-class Turma extends Model
-{
+class Turma extends Model {
     use HasFactory;
 
     protected $fillable = ['nome'];
 
+    public function professores() {
+        return $this->belongsToMany(Professor::class);
+    }
 
-  
-    // Defina o relacionamento com o professor
-    public function professorTurmaDisciplinas()
-    {
-        return $this->hasMany(ProfessorTurmaDisciplina::class);
+    public function disciplinas() {
+        return $this->belongsToMany(Disciplina::class);
     }
 }
+
 
 
 

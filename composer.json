@@ -8,6 +8,7 @@
         "php": "^8.1",
         "barryvdh/laravel-dompdf": "^3.1",
         "guzzlehttp/guzzle": "^7.9",
+        "infyomlabs/laravel-generator": "^6.0",
         "jeroennoten/laravel-adminlte": "^3.15",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",

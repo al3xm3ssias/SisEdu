@@ -11,11 +11,29 @@
       0 => 'Barryvdh\\DomPDF\\ServiceProvider',
     ),
   ),
+  'infyomlabs/laravel-generator' => 
+  array (
+    'providers' => 
+    array (
+      0 => '\\InfyOm\\Generator\\InfyOmGeneratorServiceProvider',
+    ),
+  ),
   'jeroennoten/laravel-adminlte' => 
   array (
     'providers' => 
     array (
       0 => 'JeroenNoten\\LaravelAdminLte\\AdminLteServiceProvider',
+    ),
+  ),
+  'laracasts/flash' => 
+  array (
+    'aliases' => 
+    array (
+      'Flash' => 'Laracasts\\Flash\\Flash',
+    ),
+    'providers' => 
+    array (
+      0 => 'Laracasts\\Flash\\FlashServiceProvider',
     ),
   ),
   'laravel/sail' => 
@@ -37,6 +55,18 @@
     'providers' => 
     array (
       0 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    ),
+  ),
+  'laravelcollective/html' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Collective\\Html\\HtmlServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'Form' => 'Collective\\Html\\FormFacade',
+      'Html' => 'Collective\\Html\\HtmlFacade',
     ),
   ),
   'nesbot/carbon' => 

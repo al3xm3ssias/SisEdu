@@ -72,6 +72,10 @@ Route::resource('turmas', TurmaController::class);
 
 Route::resource('disciplinas', DisciplinaController::class);
 
+use App\Http\Controllers\ProfessorController;
+
+Route::resource('professores', ProfessorController::class);
+
 
 
 
