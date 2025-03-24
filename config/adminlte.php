@@ -356,12 +356,12 @@ return [
             'icon' => 'fas fa-fw fa-book',
         ],
 
+              
         [
-            'text' => 'Aulas',
-            'url'  => '/aulas',
-            'icon' => 'fas fa-fw fa-square',
+            'text' => 'Professores',
+            'url'  => '/professores',
+            'icon' => 'fas fa-chalkboard-teacher',
         ],
-
 
         
       

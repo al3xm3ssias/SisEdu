@@ -24,6 +24,7 @@
             <tr>
                 <th>Nome</th>
                 <th>Disciplinas Ministradas</th>
+                <th>Turmas</th>
                 <th>Ações</th>
             </tr>
         </thead>
@@ -31,17 +32,8 @@
             @foreach($professores as $professor)
                 <tr>
                     <td>{{ $professor->nome }}</td>
-                    <td>
-    @php
-        $disciplinas = \App\Models\TurmaProfessorDisciplinas::where('professor_id', $professor->id)
-            ->pluck('disciplina_id')
-            ->toArray();
-        
-        $nomes_disciplinas = \App\Models\Disciplina::whereIn('id', $disciplinas)->pluck('nome')->toArray();
-    @endphp
-    {{ count($nomes_disciplinas) > 0 ? implode(', ', $nomes_disciplinas) : 'Nenhuma' }}
-</td>
-
+                    <td>{{ $professor->disciplinas->pluck('nome')->implode(', ') ?: 'Nenhuma' }}</td>
+                    <td>{{ $professor->turmas->pluck('nome')->implode(', ') ?: 'Nenhuma' }}</td>
                     <td>
                         <a href="{{ route('professores.edit', $professor->id) }}" class="btn btn-primary btn-sm">Editar</a>
                         <form action="{{ route('professores.destroy', $professor->id) }}" method="POST" style="display:inline;">

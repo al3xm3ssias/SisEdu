@@ -20,17 +20,14 @@ class Professor extends Model
         return $this->belongsToMany(Disciplina::class);
     } */
 
-    public function turmas()
-    {
-        return $this->belongsToMany(Turma::class, 'turma_professor_disciplinas')
-                    ->withPivot('disciplina_id')
-                    ->withTimestamps();
-    }
-
-
     public function disciplinas()
     {
-        return $this->belongsToMany(Disciplina::class, 'turma_disciplina', 'professor_id', 'disciplina_id');
+        return $this->belongsToMany(Disciplina::class, 'turma_professor_disciplinas', 'professor_id', 'disciplina_id');
+    }
+
+    public function turmas()
+    {
+        return $this->belongsToMany(Turma::class, 'turma_professor_disciplinas', 'professor_id', 'turma_id');
     }
 }
 
