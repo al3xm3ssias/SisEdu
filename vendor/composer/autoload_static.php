@@ -602,8 +602,10 @@ class ComposerStaticInitd97e81e02db2f39f2bf1f1a3f5ca3223
 
     public static $classMap = array (
         'App\\Console\\Commands\\BaixarArquivoServidor' => __DIR__ . '/../..' . '/app/Console/Commands/BaixarArquivoServidor.php',
+        'App\\Console\\Commands\\CreateCrudViews' => __DIR__ . '/../..' . '/app/Console/Commands/CreateCrudViews.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Http\\Controllers\\AulaController' => __DIR__ . '/../..' . '/app/Http/Controllers/AulaController.php',
         'App\\Http\\Controllers\\CienciaController' => __DIR__ . '/../..' . '/app/Http/Controllers/CienciaController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\CsvController' => __DIR__ . '/../..' . '/app/Http/Controllers/CsvController.php',
@@ -761,6 +763,7 @@ class ComposerStaticInitd97e81e02db2f39f2bf1f1a3f5ca3223
         'Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/DatabaseSeeder.php',
         'Database\\Seeders\\DisciplinaSeeder' => __DIR__ . '/../..' . '/database/seeders/DisciplinaSeeder.php',
         'Database\\Seeders\\FuncionarioSeeder' => __DIR__ . '/../..' . '/database/seeders/FuncionarioSeeder.php',
+        'Database\\Seeders\\TurmaDisciplinaSeeder' => __DIR__ . '/../..' . '/database/seeders/TurmaDisciplinaSeeder.php',
         'Database\\Seeders\\TurmasSeeder' => __DIR__ . '/../..' . '/database/seeders/TurmasSeeder.php',
         'Database\\Seeders\\TurnoSeeder' => __DIR__ . '/../..' . '/database/seeders/TurnoSeeder.php',
         'DateError' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/DateError.php',

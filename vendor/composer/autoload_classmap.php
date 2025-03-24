@@ -7,8 +7,10 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Console\\Commands\\BaixarArquivoServidor' => $baseDir . '/app/Console/Commands/BaixarArquivoServidor.php',
+    'App\\Console\\Commands\\CreateCrudViews' => $baseDir . '/app/Console/Commands/CreateCrudViews.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
+    'App\\Http\\Controllers\\AulaController' => $baseDir . '/app/Http/Controllers/AulaController.php',
     'App\\Http\\Controllers\\CienciaController' => $baseDir . '/app/Http/Controllers/CienciaController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\CsvController' => $baseDir . '/app/Http/Controllers/CsvController.php',
@@ -166,6 +168,7 @@ return array(
     'Database\\Seeders\\DatabaseSeeder' => $baseDir . '/database/seeders/DatabaseSeeder.php',
     'Database\\Seeders\\DisciplinaSeeder' => $baseDir . '/database/seeders/DisciplinaSeeder.php',
     'Database\\Seeders\\FuncionarioSeeder' => $baseDir . '/database/seeders/FuncionarioSeeder.php',
+    'Database\\Seeders\\TurmaDisciplinaSeeder' => $baseDir . '/database/seeders/TurmaDisciplinaSeeder.php',
     'Database\\Seeders\\TurmasSeeder' => $baseDir . '/database/seeders/TurmasSeeder.php',
     'Database\\Seeders\\TurnoSeeder' => $baseDir . '/database/seeders/TurnoSeeder.php',
     'DateError' => $vendorDir . '/symfony/polyfill-php83/Resources/stubs/DateError.php',

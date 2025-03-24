@@ -15,13 +15,22 @@ class Professor extends Model
         'funcionario_id','nome', 'matricula',
     ];
 
-
+/*
     public function disciplinas() {
         return $this->belongsToMany(Disciplina::class);
+    } */
+
+    public function turmas()
+    {
+        return $this->belongsToMany(Turma::class, 'turma_professor_disciplinas')
+                    ->withPivot('disciplina_id')
+                    ->withTimestamps();
     }
 
-    public function turmas() {
-        return $this->belongsToMany(Turma::class);
+
+    public function disciplinas()
+    {
+        return $this->belongsToMany(Disciplina::class, 'turma_disciplina', 'professor_id', 'disciplina_id');
     }
 }
 

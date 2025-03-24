@@ -30,5 +30,10 @@ class DatabaseSeeder extends Seeder
          // Adicione outros seeders conforme necessário
 
          $this->call(TurmasSeeder::class);
+
+         $this->call(TurmaDisciplinaSeeder::class);
+         
      }
+
+
 }

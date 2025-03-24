@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Turma;
+use App\Models\Disciplina;
 use Illuminate\Http\Request;
 
 class TurmaController extends Controller
@@ -56,6 +57,22 @@ class TurmaController extends Controller
         ]);
 
         return redirect()->route('turmas.index')->with('success', 'Turma atualizada com sucesso!');
+    }
+
+
+    public function carregarDisciplinas($turmaId)
+    {
+        // Verifica se a turma existe
+        $turma = Turma::find($turmaId);
+
+        if (!$turma) {
+            return response()->json(['error' => 'Turma não encontrada'], 404);
+        }
+
+        // Recupera as disciplinas associadas à turma através da tabela pivot
+        $disciplinas = $turma->disciplinas; // Presumindo que há um relacionamento definido em Turma model
+
+        return response()->json($disciplinas);
     }
 }
 

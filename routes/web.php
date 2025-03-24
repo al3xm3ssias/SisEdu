@@ -8,8 +8,12 @@ use App\Http\Controllers\CienciaController;
 use App\Http\Controllers\TurmaController;
 use App\Http\Controllers\TurmaProfessorController;
 
+
+use App\Http\Controllers\TurmaProfessorDisciplinaController;
+
 use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\DisciplinaProfessorController;
+use App\Http\Controllers\ProfessorController;
 
 
 /*
@@ -42,10 +46,10 @@ Route::get('/painel', function () {
 Route::get('/baixar-csv', [CsvController::class, 'baixarCsv'])->name('baixar-csv');
 
 Route::resource('funcionarios', FuncionarioController::class);
-
+/*
 Route::get('/funcionarios/create', [FuncionarioController::class, 'create'])->name('funcionarios.create');
 
-Route::get('funcionarios/{id}', [FuncionarioController::class, 'show'])->name('funcionarios.show');
+//Route::get('funcionarios/{id}', [FuncionarioController::class, 'show'])->name('funcionarios.show');
 
 
 Route::put('/funcionarios/{id}', [FuncionarioController::class, 'update'])->name('funcionarios.update');
@@ -53,7 +57,7 @@ Route::put('/funcionarios/{id}', [FuncionarioController::class, 'update'])->name
 
 Route::post('/funcionarios', [FuncionarioController::class, 'store'])->name('funcionarios.store');
 
-
+*/
 
 
 Route::post('/gerar-ciencia', [CienciaController::class, 'gerarCiencia'])->name('gerar.ciencia');
@@ -67,12 +71,22 @@ Route::get('turmas/create', [TurmaController::class, 'create'])->name('turmas.cr
 
 Route::resource('turmas', TurmaController::class);
 
-use App\Http\Controllers\AulaController;
 
-Route::resource('aulas', AulaController::class);
 
 
 Route::resource('disciplinas', DisciplinaController::class);
+
+
+Route::post('/turma-professor-disciplinas', [TurmaProfessorDisciplinaController::class, 'store'])->name('turma_professor_disciplinas.store');
+
+
+Route::get('/professores/create', [ProfessorController::class, 'create'])->name('professores.create');
+Route::get('/professores/edit', [ProfessorController::class, 'edit'])->name('professores.edit');
+Route::get('/professores/destroy', [ProfessorController::class, 'destroy'])->name('professores.destroy');
+Route::get('/professores', [ProfessorController::class, 'index'])->name('professores.index');
+
+
+
 
 
 
