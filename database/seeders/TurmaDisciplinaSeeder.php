@@ -18,7 +18,7 @@ class TurmaDisciplinaSeeder extends Seeder
         $disciplinasInfantil = [9, 4, 5, 2]; // Campos de Experiência, Ed. Física, Arte, LAC
 
         // Disciplinas para 1º ao 5º ano (todas exceto Campos de Experiência)
-        $disciplinasGerais = [1, 2, 3, 4, 5, 6, 7, 8]; // Sem a 9 (Campos de Experiência)
+        $disciplinasGerais = [1, 2, 3, 4, 5, 6, 7, 8, 10]; // Sem a 9 (Campos de Experiência)
 
         // Turmas INFANTIL IV e INFANTIL V
         foreach ([1, 2] as $turmaId) {

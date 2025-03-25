@@ -31,6 +31,7 @@ class DisciplinaSeeder extends Seeder
             ['id' => 7, 'nome' => 'História'],
             ['id' => 8, 'nome' => 'Formação Humana'],
             ['id' => 9, 'nome' => 'Campos de Experiência'],
+            ['id' => 10, 'nome' => 'Geografia'],
         ]);
     }
 }

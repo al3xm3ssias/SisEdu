@@ -14,6 +14,9 @@ use App\Http\Controllers\TurmaProfessorDisciplinaController;
 use App\Http\Controllers\DisciplinaController;
 use App\Http\Controllers\DisciplinaProfessorController;
 use App\Http\Controllers\ProfessorController;
+use App\Http\Controllers\GradeAulaController;
+use App\Http\Controllers\DisciplinaHorarioController;
+
 
 
 /*
@@ -101,5 +104,12 @@ Route::delete('turma-professor/{professor_id}/turma/{turma_id}',
 
 // Rota para listagem de professores
 Route::get('professores', [ProfessorController::class, 'index'])->name('professores.index');
+
+
+
+
+Route::resource('grade_aulas', GradeAulaController::class);
+
+
 
 

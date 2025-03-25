@@ -363,6 +363,12 @@ return [
             'icon' => 'fas fa-chalkboard-teacher',
         ],
 
+        [
+            'text' => 'Grade de Aulas',
+            'url'  => '/grade_aulas',
+            'icon' => 'fas fa-chalkboard',
+        ],
+
         
       
        

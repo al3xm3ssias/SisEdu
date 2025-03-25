@@ -30,6 +30,8 @@ public function disciplina()
     return $this->belongsTo(Disciplina::class, 'disciplina_id');
 }
 
+
+
     
 
     public function disciplinas()
@@ -40,6 +42,11 @@ public function disciplina()
         'professor_id',               // Chave estrangeira para o professor
         'disciplina_id'               // Chave estrangeira para a disciplina
     );
+}
+
+public function gradeAulas()
+{
+    return $this->hasMany(GradeAula::class);
 }
 
 }

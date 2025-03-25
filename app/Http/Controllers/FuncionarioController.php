@@ -15,7 +15,7 @@ class FuncionarioController extends Controller
     public function index()
     {
         // Carregar funcionários com cargo e turno relacionados
-        $funcionarios = Funcionario::with(['cargo', 'turno'])->get();
+        $funcionarios = Funcionario::with(['cargo', 'turno'])->orderBy('nome', 'asc')->get();
         return view('funcionarios.index', compact('funcionarios'));
     }
 
