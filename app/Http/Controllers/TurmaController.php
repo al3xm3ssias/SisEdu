@@ -11,7 +11,7 @@ class TurmaController extends Controller
     // Mostrar todas as turmas
     public function index()
     {
-        $turmas = Turma::all();  // Pega todas as turmas
+        $turmas = Turma::orderBy('nome', 'asc')->get();  // Pega todas as turmas
         return view('turmas.index', compact('turmas'));
     }
 

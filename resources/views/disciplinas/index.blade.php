@@ -9,13 +9,15 @@
     <table class="table mt-3">
         <thead>
             <tr>
+                <th>Nº</th>
                 <th>Nome</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($disciplinas as $disciplina)
+            @foreach($disciplinas as $index => $disciplina)
                 <tr>
+                <td>{{ $index + 1 }}</td> <!-- Contador de 1 até N -->
                     <td>{{ $disciplina->nome }}</td>
                     <td>
                         <a href="{{ route('disciplinas.edit', $disciplina) }}" class="btn btn-warning">Editar</a>

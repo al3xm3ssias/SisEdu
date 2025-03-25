@@ -35,9 +35,9 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($funcionarios as $funcionario)
+            @foreach($funcionarios as $index => $funcionario)
                 <tr>
-                    <td>{{ $funcionario->id }}</td>
+                <td>{{ $index + 1 }}</td> <!-- Contador de 1 até N -->
                     <td>{{ $funcionario->matricula }}</td>
                     <td>{{ $funcionario->nome }}</td>
                     <td>{{ $funcionario->turno->descricao ?? 'Não atribuído' }}</td>

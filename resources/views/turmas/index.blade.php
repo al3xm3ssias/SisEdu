@@ -7,19 +7,20 @@
 @stop
 
 @section('content')
+<a href="{{ route('turmas.create') }}" class="btn btn-primary">Adicionar Turma</a>
 
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Nº</th>
                 <th>Nome</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($turmas as $turma)
+            @foreach($turmas as $index => $turma)
                 <tr>
-                    <td>{{ $turma->id }}</td>
+                <td>{{ $index + 1 }}</td> <!-- Contador de 1 até N -->
                     <td>{{ $turma->nome }}</td>
                     <td>
                         <a href="{{ route('turmas.edit', $turma->id) }}" class="btn btn-warning">Editar</a>
@@ -34,7 +35,7 @@
         </tbody>
     </table>
 
-    <a href="{{ route('turmas.create') }}" class="btn btn-primary">Adicionar Turma</a>
+    
 
 @stop
 
