@@ -95,8 +95,9 @@ Route::put('turma_professor_disciplinas/{id}', [TurmaProfessorDisciplinaControll
 // Rota para editar a página de um professor (página de edição do professor)
 Route::get('professores/{professor}/edit', [ProfessorController::class, 'edit'])->name('professores.edit');
 
-Route::delete('turma_professor_disciplinas/{id}', [TurmaProfessorDisciplinaController::class, 'destroy'])
-     ->name('turma_professor_disciplinas.destroy');
+Route::delete('turma-professor/{professor_id}/turma/{turma_id}', 
+    [TurmaProfessorDisciplinaController::class, 'destroy']
+)->name('turma_professor_disciplinas.destroy');
 
 // Rota para listagem de professores
 Route::get('professores', [ProfessorController::class, 'index'])->name('professores.index');

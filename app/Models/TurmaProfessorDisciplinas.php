@@ -25,10 +25,10 @@ class TurmaProfessorDisciplinas extends Model
     return $this->belongsTo(Turma::class, 'turma_id');
 }
 
-    public function disciplina()
-    {
-        return $this->belongsTo(Disciplina::class);
-    }
+public function disciplina()
+{
+    return $this->belongsTo(Disciplina::class, 'disciplina_id');
+}
 
     
 

@@ -48,25 +48,19 @@ class ProfessorController extends Controller
         return redirect()->route('professores.index')->with('success', 'Professor cadastrado com sucesso!');
     } */
     public function edit($id)
-{
-    $professor = Professor::findOrFail($id);
-
-    // Carregar a relação de turma e disciplinas ao mesmo tempo
-    $turmaDisciplina = TurmaProfessorDisciplinas::where('professor_id', $id)
-        ->with('disciplinas')  // Garantir que estamos carregando disciplinas
-        ->first();
-
-    if ($turmaDisciplina) {
-        dd($turmaDisciplina); // Mostrar as disciplinas
-    } else {
-        dd('Nenhum relacionamento encontrado.');
+    {
+        $professor = Professor::findOrFail($id);
+        $turmas = Turma::all();
+        $disciplinas = Disciplina::all();
+        // Buscar todas as turmas e disciplinas associadas ao professor
+        $relacoes = TurmaProfessorDisciplinas::where('professor_id', $professor->id)
+            ->with(['turma', 'disciplina']) // Certifique-se de ter esses relacionamentos no modelo
+            ->get();
+        
+        //dd($relacoes);
+        return view('professores.edit', compact('professor', 'relacoes', 'turmas', 'disciplinas'));
     }
-
-    $turmas = Turma::all();
-    $disciplinas = Disciplina::all();
-
-    return view('professores.edit', compact('professor', 'turmaDisciplina', 'turmas', 'disciplinas'));
-}
+    
 
     
 
