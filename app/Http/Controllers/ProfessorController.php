@@ -26,8 +26,8 @@ class ProfessorController extends Controller
 
     public function create()
     {
-        $turmas = Turma::all();
-        $professores = Professor::all();
+        $turmas = Turma::orderBy('nome', 'asc')->get();
+        $professores = Professor::orderBy('nome', 'asc')->get();
         $disciplinas = collect();
         return view('professores.create', compact('turmas', 'professores', 'disciplinas'));
     }
@@ -118,21 +118,19 @@ public function getDisciplinasByProfessor($professorId)
 
 
 public function getDisciplinasPorTurma($turma_id)
-    {
-        // Recuperar a turma pelo ID
-        $turma = Turma::find($turma_id);
+{
+    // Recuperar a turma pelo ID
+    $turma = Turma::find($turma_id);
 
-        if (!$turma) {
-            return response()->json(['message' => 'Turma não encontrada'], 404);
-        }
-
-        // Supondo que você tem uma relação de disciplinas com a turma, vamos buscar as disciplinas
-        // Ajuste a relação conforme seu modelo de dados
-        $disciplinas = $turma->disciplinas; // Assume que existe uma relação 'disciplinas'
-
-        return response()->json($disciplinas);
+    if (!$turma) {
+        return response()->json(['message' => 'Turma não encontrada'], 404);
     }
 
+    // Buscar as disciplinas associadas à turma, ordenadas por nome
+    $disciplinas = $turma->disciplinas()->orderBy('nome', 'asc')->get(); // 'asc' para ordem alfabética crescente
+
+    return response()->json($disciplinas);
+}
 
 
  

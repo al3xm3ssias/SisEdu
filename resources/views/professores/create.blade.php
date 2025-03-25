@@ -25,16 +25,16 @@
     <form id="professorForm" action="{{ route('turma_professor_disciplinas.store') }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="professor" class="form-label">Professor</label>
-            <select id="professor" name="professor_id" class="form-control">
-                <option value="">Selecione um professor</option>
-                @foreach($professores as $professor)
-                    <option value="{{ $professor->id }}" {{ isset($professor) && $professor->id == old('professor_id', $professor->id) ? 'selected' : '' }}>
-                        {{ $professor->nome }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+    <label for="professor" class="form-label">Professor</label>
+    <select id="professor" name="professor_id" class="form-control">
+        <option value="" {{ old('professor_id') === null ? 'selected' : '' }}>Selecione um professor</option> <!-- Aqui, verificamos se o old está vazio -->
+        @foreach($professores as $professor)
+            <option value="{{ $professor->id }}" {{ old('professor_id') == $professor->id ? 'selected' : '' }}>
+                {{ $professor->nome }}
+            </option>
+        @endforeach
+    </select>
+</div>
 
         <div class="mb-3">
             <label for="turma" class="form-label">Selecione a Turma</label>
@@ -67,6 +67,7 @@
                 <tr>
                     <th>Turma</th>
                     <th>Disciplina</th>
+                    <th>Ação</th>
                 </tr>
             </thead>
             <tbody id="disciplinasTableBody">
@@ -139,6 +140,9 @@
                 return;
             }
 
+            // Limpar o select de disciplinas após inclusão
+            $('#disciplinas').empty();
+
             var disciplinasTable = $('#disciplinasTableBody');
 
             disciplinasSelecionadas.each(function () {
@@ -149,7 +153,7 @@
                 if ($('#disciplinasTableBody tr[data-turma="' + turmaId + '"][data-disciplina="' + disciplinaId + '"]').length === 0) {
                     // Adiciona a linha na tabela
                     disciplinasTable.append(
-                        '<tr data-turma="' + turmaId + '" data-disciplina="' + disciplinaId + '"><td>' + turmaNome + '</td><td>' + disciplinaNome + '</td></tr>'
+                        '<tr data-turma="' + turmaId + '" data-disciplina="' + disciplinaId + '"><td>' + turmaNome + '</td><td>' + disciplinaNome + '</td><td><button type="button" class="btn btn-danger btn-sm remove-discipline">🗑️</button></td></tr>'
                     );
                     // Cria os inputs ocultos para enviar os dados
                     $('#turma_disciplinas_inputs').append(
@@ -161,6 +165,11 @@
                     index++;
                 }
             });
+        });
+
+        // Função para remover a disciplina da tabela
+        $(document).on('click', '.remove-discipline', function () {
+            $(this).closest('tr').remove(); // Remove a linha
         });
     });
 </script>

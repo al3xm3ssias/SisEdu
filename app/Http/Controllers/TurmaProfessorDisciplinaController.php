@@ -87,18 +87,29 @@ public function update(Request $request, $id)
                      ->with('success', 'Turma e Disciplina excluídas com sucesso.');
 }
 
-public function destroy($id)
+public function destroy($professor_id, $turma_id)
 {
-    // Encontra o registro de Turma e Disciplina
-    $turmaDisciplina = TurmaProfessorDisciplinas::findOrFail($id);
+    // Encontra a relação de Turma e Disciplina associada ao professor
+    $turmaDisciplina = TurmaProfessorDisciplinas::where('professor_id', $professor_id)
+                                                ->where('turma_id', $turma_id)
+                                                ->firstOrFail();
 
     // Exclui a relação de Turma e Disciplina
     $turmaDisciplina->delete();
 
-    // Redireciona para a página de edição do professor com uma mensagem de sucesso
-    return redirect()->route('professores.edit', $turmaDisciplina->professor_id)
-                     ->with('success', 'Relação de Turma e Disciplina excluída com sucesso.');
+    // Conta as relações restantes para o professor
+    $count = TurmaProfessorDisciplinas::where('professor_id', $professor_id)->count();
+
+    // Redireciona para o index se a contagem for igual a 1, caso contrário para o edit
+    if ($count == 0) {
+        return redirect()->route('professores.index')
+                         ->with('success', 'Relação de Turma e Disciplina excluída com sucesso.');
+    } else {
+        return redirect()->route('professores.edit', $professor_id)
+                         ->with('success', 'Relação de Turma e Disciplina excluída com sucesso.');
+    }
 }
+
 
 
  /*
@@ -189,20 +200,19 @@ public function updateTurmaDisciplina($id, Request $request)
 
 */
 
-    public function getDisciplinasPorTurma($turma_id)
-    {
-        // Recuperar a turma pelo ID
-        $turma = Turma::find($turma_id);
+public function getDisciplinasPorTurma($turma_id)
+{
+    // Recuperar a turma pelo ID
+    $turma = Turma::find($turma_id);
 
-        if (!$turma) {
-            return response()->json(['message' => 'Turma não encontrada'], 404);
-        }
-
-        // Supondo que você tem uma relação de disciplinas com a turma, vamos buscar as disciplinas
-        // Ajuste a relação conforme seu modelo de dados
-        $disciplinas = $turma->disciplinas; // Assume que existe uma relação 'disciplinas'
-
-        return response()->json($disciplinas);
+    if (!$turma) {
+        return response()->json(['message' => 'Turma não encontrada'], 404);
     }
+
+    // Buscar as disciplinas associadas à turma, ordenadas por nome
+    $disciplinas = $turma->disciplinas()->orderBy('nome', 'asc')->get(); // 'asc' para ordem alfabética crescente
+
+    return response()->json($disciplinas);
+}
 }
 
