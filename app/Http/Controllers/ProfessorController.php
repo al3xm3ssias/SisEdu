@@ -6,17 +6,23 @@ use Illuminate\Http\Request;
 use App\Models\Professor;
 use App\Models\Turma;
 use App\Models\Disciplina;
+use App\Models\TurmaProfessorDisciplinas;
 
 class ProfessorController extends Controller
 {
+  
+    // Carregar os professores com suas turmas e disciplinas associadas
     public function index()
-    { /*
-        $professores = Professor::with('turmas', 'disciplinas')->get();
-        return view('professores.index', compact('professores')); */
+{
+    // Carregar os professores com suas disciplinas e turmas associadas
+    $professores = TurmaProfessorDisciplinas::with(['professor', 'disciplina', 'turma'])->get();
 
-        $professores = Professor::all();
-        return view('professores.index', compact('professores'));
-    }
+    // Verifique se os dados estão sendo carregados corretamente
+    //dd($professores);
+
+    return view('professores.index', compact('professores'));
+}
+
 
     public function create()
     {
@@ -26,7 +32,7 @@ class ProfessorController extends Controller
         return view('professores.create', compact('turmas', 'professores', 'disciplinas'));
     }
 
-    public function store(Request $request)
+    /*public function store(Request $request)
     {
         $professor = Professor::create([
             'nome' => $request->nome,
@@ -40,16 +46,41 @@ class ProfessorController extends Controller
         }
 
         return redirect()->route('professores.index')->with('success', 'Professor cadastrado com sucesso!');
-    }
-
+    } */
     public function edit($id)
-    {
-        $professor = Professor::findOrFail($id);
-        $turmas = Turma::all();
-        return view('professores.edit', compact('professor', 'turmas'));
+{
+    $professor = Professor::findOrFail($id);
+
+    // Carregar a relação de turma e disciplinas ao mesmo tempo
+    $turmaDisciplina = TurmaProfessorDisciplinas::where('professor_id', $id)
+        ->with('disciplinas')  // Garantir que estamos carregando disciplinas
+        ->first();
+
+    if ($turmaDisciplina) {
+        dd($turmaDisciplina); // Mostrar as disciplinas
+    } else {
+        dd('Nenhum relacionamento encontrado.');
     }
 
-    public function update(Request $request, $id)
+    $turmas = Turma::all();
+    $disciplinas = Disciplina::all();
+
+    return view('professores.edit', compact('professor', 'turmaDisciplina', 'turmas', 'disciplinas'));
+}
+
+    
+
+
+
+
+    
+
+
+    
+
+
+
+   /*public function update(Request $request, $id)
     {
         $professor = Professor::findOrFail($id);
         $professor->update([
@@ -63,10 +94,10 @@ class ProfessorController extends Controller
         }
 
         return redirect()->route('professores.index')->with('success', 'Professor atualizado com sucesso!');
-    }
+    } */
 
 
-    public function destroy(Professor $professor)
+  /*  public function destroy(Professor $professor)
     {
         $professor->turmas()->detach();
         $professor->disciplinas()->detach();
@@ -74,7 +105,7 @@ class ProfessorController extends Controller
 
         return redirect()->route('professores.index')->with('success', 'Professor excluído com sucesso!');
     }
-
+ */
    // app/Http/Controllers/ProfessorController.php
 
 public function getDisciplinasByProfessor($professorId)

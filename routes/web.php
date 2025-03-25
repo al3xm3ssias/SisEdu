@@ -78,27 +78,27 @@ Route::resource('disciplinas', DisciplinaController::class);
 
 
 Route::post('/turma-professor-disciplinas', [TurmaProfessorDisciplinaController::class, 'store'])->name('turma_professor_disciplinas.store');
+//Route::put('/turma-professor-disciplinas/{id}', [TurmaProfessorDisciplinaController::class, 'update'])->name('turma_professor_disciplinas.update');
+
+//Route::delete('/turma_professor_disciplinas/{id}', [TurmaProfessorDisciplinasController::class, 'destroy'])->name('turma_professor_disciplinas.destroy');
+
+
 
 
 Route::get('/professores/create', [ProfessorController::class, 'create'])->name('professores.create');
-Route::get('/professores/edit', [ProfessorController::class, 'edit'])->name('professores.edit');
-Route::get('/professores/destroy', [ProfessorController::class, 'destroy'])->name('professores.destroy');
-Route::get('/professores', [ProfessorController::class, 'index'])->name('professores.index');
+
+Route::resource('turma_professor_disciplinas', TurmaProfessorDisciplinaController::class);
+
+// Rota para atualizar turma e disciplina do professor
+Route::put('turma_professor_disciplinas/{id}', [TurmaProfessorDisciplinaController::class, 'updateTurmaDisciplina'])->name('turma_professor_disciplinas.update');
+
+// Rota para editar a página de um professor (página de edição do professor)
+Route::get('professores/{professor}/edit', [ProfessorController::class, 'edit'])->name('professores.edit');
+
+Route::delete('turma_professor_disciplinas/{id}', [TurmaProfessorDisciplinaController::class, 'destroy'])
+     ->name('turma_professor_disciplinas.destroy');
+
+// Rota para listagem de professores
+Route::get('professores', [ProfessorController::class, 'index'])->name('professores.index');
 
 
-
-
-
-
-
-
-
-
-
-/*
-Route::resource('turmas', TurmaProfessoraController::class);
-
- /*
-Route::get('/gerar-ciencia', [CienciaController::class, 'form'])->name('gerar-ciencia.form');
-Route::get('/gerar-ciencia/pdf', [CienciaController::class, 'gerarPdf'])->name('gerar-ciencia.pdf');;
-*/

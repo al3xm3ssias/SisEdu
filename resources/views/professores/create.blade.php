@@ -53,11 +53,13 @@
         </div>
 
         <label for="disciplinas" class="form-label">Selecione as Disciplinas</label>
-<select id="disciplinas" name="disciplinas_id[]" class="form-control" multiple>
-    @foreach($disciplinas as $disciplina)
-        <option value="{{ $disciplina->id }}">{{ $disciplina->nome }}</option>
-    @endforeach
-</select>
+        <select id="disciplinas" name="disciplinas_id[]" class="form-control" multiple>
+            <!-- As disciplinas serão carregadas via AJAX -->
+        </select>
+
+        <div class="mb-3">
+            <button type="button" id="incluir-disciplina" class="btn btn-primary">Incluir Disciplina</button>
+        </div>
 
         <h4>Disciplinas Selecionadas</h4>
         <table class="table table-bordered">
@@ -68,10 +70,12 @@
                 </tr>
             </thead>
             <tbody id="disciplinasTableBody">
-                </tbody>
+                <!-- As disciplinas selecionadas serão adicionadas aqui -->
+            </tbody>
         </table>
 
-        <input type="hidden" id="disciplinasInput" name="disciplina_id[]" value="{{ is_array(old('disciplina_id')) ? implode(',', old('disciplina_id')) : old('disciplina_id') }}">
+        <!-- Container para os inputs ocultos com os pares turma/disciplina -->
+        <div id="turma_disciplinas_inputs"></div>
 
         <div class="mt-3">
             <button type="submit" class="btn btn-success">Salvar</button>
@@ -79,27 +83,27 @@
     </form>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+<!-- jQuery CDN -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#turma').on('change', function () {
-            var turmaId = $(this).val();
+        // Botão para carregar disciplinas no <select> múltiplo
+        $('#carregar-disciplinas').on('click', function () {
+            var turmaId = $('#turma').val();
 
             if (!turmaId) {
-                $('#disciplinas').empty(); // Limpa as opções se nenhuma turma for escolhida
+                alert('Por favor, selecione uma turma.');
+                $('#disciplinas').empty().append('<option value="">Selecione uma turma primeiro...</option>');
                 return;
             }
 
-            // Faz a requisição AJAX para buscar as disciplinas da turma selecionada
             $.ajax({
                 url: '/api/disciplinas/' + turmaId,
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
                     var disciplinasSelect = $('#disciplinas');
-                    disciplinasSelect.empty(); // Limpa as opções atuais
+                    disciplinasSelect.empty();
 
                     if (data.length > 0) {
                         data.forEach(function (disciplina) {
@@ -107,6 +111,7 @@
                         });
                     } else {
                         alert('Nenhuma disciplina encontrada para essa turma.');
+                        disciplinasSelect.append('<option value="">Nenhuma disciplina disponível</option>');
                     }
                 },
                 error: function () {
@@ -114,7 +119,49 @@
                 }
             });
         });
+
+        // Índice global para os inputs ocultos
+        var index = 0;
+
+        // Botão para incluir as disciplinas selecionadas na tabela
+        $('#incluir-disciplina').on('click', function () {
+            var turmaId = $('#turma').val();
+            var turmaNome = $('#turma option:selected').text();
+            var disciplinasSelecionadas = $('#disciplinas option:selected');
+
+            if (!turmaId) {
+                alert('Por favor, selecione uma turma.');
+                return;
+            }
+
+            if (disciplinasSelecionadas.length === 0) {
+                alert('Selecione pelo menos uma disciplina para incluir.');
+                return;
+            }
+
+            var disciplinasTable = $('#disciplinasTableBody');
+
+            disciplinasSelecionadas.each(function () {
+                var disciplinaId = $(this).val();
+                var disciplinaNome = $(this).text();
+
+                // Verifica se a combinação turma-disciplina já foi adicionada
+                if ($('#disciplinasTableBody tr[data-turma="' + turmaId + '"][data-disciplina="' + disciplinaId + '"]').length === 0) {
+                    // Adiciona a linha na tabela
+                    disciplinasTable.append(
+                        '<tr data-turma="' + turmaId + '" data-disciplina="' + disciplinaId + '"><td>' + turmaNome + '</td><td>' + disciplinaNome + '</td></tr>'
+                    );
+                    // Cria os inputs ocultos para enviar os dados
+                    $('#turma_disciplinas_inputs').append(
+                        '<input type="hidden" name="turma_disciplinas[' + index + '][turma_id]" value="' + turmaId + '">'
+                    );
+                    $('#turma_disciplinas_inputs').append(
+                        '<input type="hidden" name="turma_disciplinas[' + index + '][disciplina_id]" value="' + disciplinaId + '">'
+                    );
+                    index++;
+                }
+            });
+        });
     });
 </script>
-
 @stop

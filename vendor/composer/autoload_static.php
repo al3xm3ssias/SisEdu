@@ -342,13 +342,13 @@ class ComposerStaticInitd97e81e02db2f39f2bf1f1a3f5ca3223
         ),
         'Spatie\\LaravelIgnition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
-            1 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
+            0 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
+            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
         ),
         'Spatie\\Ignition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
-            1 => __DIR__ . '/..' . '/spatie/ignition/src',
+            0 => __DIR__ . '/..' . '/spatie/ignition/src',
+            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
         ),
         'Spatie\\FlareClient\\' => 
         array (
@@ -614,6 +614,7 @@ class ComposerStaticInitd97e81e02db2f39f2bf1f1a3f5ca3223
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\ProfessorController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfessorController.php',
         'App\\Http\\Controllers\\TurmaController' => __DIR__ . '/../..' . '/app/Http/Controllers/TurmaController.php',
+        'App\\Http\\Controllers\\TurmaProfessorDisciplinaController' => __DIR__ . '/../..' . '/app/Http/Controllers/TurmaProfessorDisciplinaController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
@@ -629,6 +630,7 @@ class ComposerStaticInitd97e81e02db2f39f2bf1f1a3f5ca3223
         'App\\Models\\Funcionario' => __DIR__ . '/../..' . '/app/Models/Funcionario.php',
         'App\\Models\\Professor' => __DIR__ . '/../..' . '/app/Models/Professor.php',
         'App\\Models\\Turma' => __DIR__ . '/../..' . '/app/Models/Turma.php',
+        'App\\Models\\TurmaProfessorDisciplinas' => __DIR__ . '/../..' . '/app/Models/TurmaProfessorDisciplinas.php',
         'App\\Models\\Turno' => __DIR__ . '/../..' . '/app/Models/Turno.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Observers\\FuncionarioObserver' => __DIR__ . '/../..' . '/app/Observers/FuncionarioObserver.php',
