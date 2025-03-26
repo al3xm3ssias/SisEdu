@@ -11,6 +11,12 @@
             <label for="nome">Nome da Disciplina</label>
             <input type="text" id="nome" name="nome" class="form-control" required>
         </div>
+
+        <div class="form-group">
+            <label for="carga_horaria_max">Carga horária Máxima</label>
+            <input type="text" id="carga_horaria_max" name="carga_horaria_max" class="form-control" required>
+        </div>
+
         <button type="submit" class="btn btn-success">Salvar</button>
     </form>
 @stop

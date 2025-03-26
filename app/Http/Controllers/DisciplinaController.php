@@ -31,21 +31,38 @@ class DisciplinaController extends Controller
     }
 
     public function edit(Disciplina $disciplina)
-    {
-        return view('disciplinas.edit', compact('disciplina'));
-    }
+{
+    $disciplinas = Disciplina::all(); // Busca todas as disciplinas para o select
+    return view('disciplinas.edit', compact('disciplina', 'disciplinas'));
+}
 
-    public function update(Request $request, Disciplina $disciplina)
-    {
-        // A validação do nome permite que o nome da disciplina seja repetido, mas garante que o ID da disciplina sendo atualizada seja ignorado
-        $request->validate([
-            'nome' => 'required|unique:disciplinas,nome,' . $disciplina->id,
-        ]);
+public function update(Request $request, Disciplina $disciplina)
+{
+    // Validação dos campos
+    $request->merge([
+        'carga_horaria_horas' => (int) $request->carga_horaria_horas,
+        'carga_horaria_minutos' => (int) $request->carga_horaria_minutos,
+    ]);
+    
+    $request->validate([
+        'nome' => 'required|unique:disciplinas,nome,' . $disciplina->id,
+        'carga_horaria_horas' => 'required|integer|min:0',
+        'carga_horaria_minutos' => 'required|integer|min:0|max:59',
+    ]);
 
-        $disciplina->update($request->all());
+    // Convertendo horas e minutos para minutos totais
+    $carga_horaria_total = ($request->carga_horaria_horas * 60) + $request->carga_horaria_minutos;
 
-        return redirect()->route('disciplinas.index')->with('success', 'Disciplina atualizada!');
-    }
+    // Atualizando os dados
+    $disciplina->update([
+        'nome' => $request->nome,
+        'carga_horaria_max' => $carga_horaria_total,
+    ]);
+
+    // Redireciona para a lista de disciplinas com mensagem de sucesso
+    return redirect()->route('disciplinas.index')->with('success', 'Disciplina atualizada com sucesso!');
+}
+
 
     public function destroy(Disciplina $disciplina)
     {

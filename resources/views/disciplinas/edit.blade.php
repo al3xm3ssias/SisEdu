@@ -4,47 +4,43 @@
 @section('content_header')
     <h1>Editar Disciplina</h1>
 @stop
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
 @section('content')
     <h1>Editar Aula</h1>
 
-    <form action="{{ route('aulas.update', $aula->id) }}" method="POST">
+    <form action="{{ route('disciplinas.update', $disciplina->id) }}" method="POST">
         @csrf
         @method('PUT')
-        <div class="form-group">
-            <label for="turma_id">Turma</label>
-            <select name="turma_id" id="turma_id" class="form-control" required>
-                <option value="">Selecione a turma</option>
-                @foreach($turmas as $turma)
-                    <option value="{{ $turma->id }}" {{ $aula->turma_id == $turma->id ? 'selected' : '' }}>{{ $turma->nome }}</option>
-                @endforeach
-            </select>
-        </div>
 
         <div class="form-group">
-            <label for="professor_id">Professor</label>
-            <select name="professor_id" id="professor_id" class="form-control" required>
-                <option value="">Selecione o professor</option>
-                @foreach($professores as $professor)
-                    <option value="{{ $professor->id }}" {{ $aula->professor_id == $professor->id ? 'selected' : '' }}>{{ $professor->nome }}</option>
-                @endforeach
-            </select>
+            <label for="nome">Nome da Disciplina</label>
+            <input type="text" name="nome" id="nome" class="form-control"
+                value="{{ old('nome', $disciplina->nome) }}" required>
         </div>
 
+        
         <div class="form-group">
-            <label for="disciplina_id">Disciplina</label>
-            <select name="disciplina_id" id="disciplina_id" class="form-control" required>
-                <option value="">Selecione a disciplina</option>
-                @foreach($disciplinas as $disciplina)
-                    <option value="{{ $disciplina->id }}" {{ $aula->disciplina_id == $disciplina->id ? 'selected' : '' }}>{{ $disciplina->nome }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="horario">Horário</label>
-            <input type="text" name="horario" id="horario" class="form-control" value="{{ $aula->horario }}" placeholder="Ex: 08:00 - 09:00" required>
-        </div>
-
+    <label for="carga_horaria_horas">Carga Horária Máxima</label>
+    <div class="d-flex">
+        <input type="number" name="carga_horaria_horas" id="carga_horaria_horas" class="form-control"
+            value="{{ old('carga_horaria_horas', intdiv($disciplina->carga_horaria_max, 60)) }}" required min="0">
+        <span class="mx-2 align-self-center">h</span>
+        <input type="number" name="carga_horaria_minutos" id="carga_horaria_minutos" class="form-control"
+            value="{{ old('carga_horaria_minutos', $disciplina->carga_horaria_max % 60) }}" required min="0" max="59">
+        <span class="mx-2 align-self-center">min</span>
+    </div>
+</div>
         <button type="submit" class="btn btn-warning">Atualizar</button>
     </form>
 @endsection

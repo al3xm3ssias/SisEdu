@@ -12,7 +12,7 @@ class Disciplina extends Model
     use HasFactory;
 
     protected $table = 'disciplinas'; // Especificando o nome da tabela
-    protected $fillable = ['nome'];
+    protected $fillable = ['nome', 'carga_horaria_max'];
 
     public function professores() {
         return $this->belongsToMany(Professor::class);
