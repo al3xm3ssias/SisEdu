@@ -24,6 +24,11 @@ class Turma extends Model
                     ->withTimestamps();
     }
 
+    public function recreios()
+{
+    return $this->belongsToMany(Recreio::class, 'recreio_turma');
+}
+
     
 }
 

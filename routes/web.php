@@ -16,6 +16,7 @@ use App\Http\Controllers\DisciplinaProfessorController;
 use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\GradeAulaController;
 use App\Http\Controllers\DisciplinaHorarioController;
+use App\Http\Controllers\RecreioController;
 
 
 
@@ -109,6 +110,8 @@ Route::get('professores', [ProfessorController::class, 'index'])->name('professo
 
 
 Route::resource('grade_aulas', GradeAulaController::class);
+
+Route::resource('recreios', RecreioController::class);
 
 
 
