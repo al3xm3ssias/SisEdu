@@ -23,5 +23,10 @@ class GradeAula extends Model
     return $this->hasMany(DisciplinaHorario::class); // Assumindo que você criou um modelo DisciplinaHorario
 }
 
+public function turma()
+{
+    return $this->belongsTo(Turma::class, 'turma_id');
+}
+
     
 }

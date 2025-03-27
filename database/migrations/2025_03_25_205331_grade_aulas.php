@@ -18,6 +18,7 @@ return new class extends Migration
        // $table->foreignId('professor_id')->constrained('professores')->onDelete('cascade');
         $table->string('dia_semana'); // Segunda, Terça, etc.
         $table->time('hora_inicio'); // Horário de início da aula
+        $table->time('hora_fim'); // Horário de início da aula
         $table->integer('duracao'); // Duração da aula em minutos
         $table->timestamps();
     });

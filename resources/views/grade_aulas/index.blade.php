@@ -9,21 +9,21 @@
             </div>
             <div class="card-body">
                 <!-- Formulário para adicionar nova grade -->
-                <form action="{{ route('grade_aulas.create', ':turma_id') }}" method="GET">
-                    @csrf
-                    <div class="form-group">
-                        <label for="turma_id">Selecione a Turma</label>
-                        <select name="turma_id" id="turma_id" class="form-control" required>
-                            <option value="" disabled selected>Selecione a turma</option>
-                            @foreach($turmas as $turma)
-                                <option value="{{ $turma->id }}">{{ $turma->nome }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-success">
-                        <i class="fas fa-plus"></i> Incluir Grade
-                    </button>
-                </form>
+                <form action="{{ route('grade_aulas.create') }}" method="GET">
+    @csrf
+    <div class="form-group">
+        <label for="turma_id">Selecione a Turma</label>
+        <select name="turma_id" id="turma_id" class="form-control" required>
+            <option value="" disabled selected>Selecione a turma</option>
+            @foreach($turmas as $turma)
+                <option value="{{ $turma->id }}">{{ $turma->nome }}</option>
+            @endforeach
+        </select>
+    </div>
+    <button type="submit" class="btn btn-success">
+        <i class="fas fa-plus"></i> Incluir Grade
+    </button>
+</form>
             </div>
         </div>
 

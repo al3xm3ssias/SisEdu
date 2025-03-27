@@ -8,6 +8,10 @@ use App\Models\TurmaProfessorDisciplinas;
 use App\Models\Turma;
 use App\Models\Professor;
 use App\Models\Disciplina;
+use App\Models\Recreio;
+
+use \DateTime;
+use \DateInterval;
 
 
 
@@ -19,31 +23,152 @@ class GradeAulaController extends Controller
     $turmas = Turma::with('disciplinas')->get();
     $grades = GradeAula::with('turma')->get();
 
-   // dd($grades);
+    //dd($turmas);
 
     return view('grade_aulas.index', compact('turmas', 'grades'));
 }
 
-public function create($id)
+
+public function create(Request $request)
 {
-    $turma = Turma::find($id); // Pegue a turma correta dinamicamente
-
-    if (!$turma) {
-        return redirect()->back()->with('error', 'Turma não encontrada');
-    }
+    $turma_id = $request->query('turma_id');
+    $turma = Turma::findOrFail($turma_id);
     
-    // Obtenha as disciplinas associadas à turma utilizando a relação já definida no modelo
-    $disciplinas = $turma->disciplinas()->orderBy('nome')->get(); // Agora traz apenas as disciplinas vinculadas à turma
+    $diasSemana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+    
+    $blocos = [
+        'manha' => [],
+        'tarde' => []
+    ];
+    
+    // Recupera os recreios padrão
+    $recreios = \App\Models\Recreio::all();
+    
+    // Usando Query Builder para consultar a tabela recreio_turma
+    $recreiosTurma = \DB::table('recreio_turma')
+    ->join('recreios', 'recreio_turma.recreio_id', '=', 'recreios.id')
+    ->select('recreios.nome', 'recreios.inicio', 'recreios.fim')
+    ->where('recreio_turma.turma_id', $turma_id)
+    ->get();
 
-    $horarios = [
-        ['inicio' => '07:45', 'fim' => '09:45'],
-        ['inicio' => '09:45', 'fim' => '11:45'],
-        ['inicio' => '12:45', 'fim' => '14:45'],
-        ['inicio' => '14:45', 'fim' => '16:45'],
-    ]; // Lista de horários fixos (ou carregue do banco)
 
-    return view('grade_aulas.create', compact('turma', 'disciplinas', 'horarios'));
+    //dd($recreiosTurma);
+
+
+    
+    // Função auxiliar para criar os slots
+    $criarSlots = function($blocosTurno, $recreios, $recreiosTurma) {
+        $slots = [];
+        foreach ($blocosTurno as $bloco) {
+            $inicio = $bloco['inicio'];
+            $duracao = $bloco['duracao'];
+            $fim = (new \DateTime($inicio))
+                ->add(new \DateInterval('PT' . $duracao . 'M'))
+                ->format('H:i');
+            $slots[] = [
+                'tipo' => 'aula',
+                'inicio' => $inicio,
+                'fim' => $fim,
+                'conteudo' => 'Livre'
+            ];
+            // Procura recreio que comece exatamente quando o bloco termina, dando prioridade ao recreio_turma
+            $recreioEncontrado = null;
+            foreach ($recreiosTurma as $recTurma) {
+                if ($recTurma->inicio === $fim) {
+                    $recreioEncontrado = $recTurma;
+                    break;
+                }
+            }
+            if (!$recreioEncontrado) {
+                foreach ($recreios as $rec) {
+                    if ($rec->inicio === $fim) {
+                        $recreioEncontrado = $rec;
+                        break;
+                    }
+                }
+            }
+            if ($recreioEncontrado) {
+                $slots[] = [
+                    'tipo' => 'intervalo',
+                    'inicio' => $recreioEncontrado->inicio,
+                    'fim' => $recreioEncontrado->fim,
+                    'conteudo' => $recreioEncontrado->nome
+                ];
+            }
+        }
+        return $slots;
+    };
+
+    $slotsManha = $criarSlots($blocos['manha'], $recreios, $recreiosTurma);
+    $slotsTarde = $criarSlots($blocos['tarde'], $recreios, $recreiosTurma);
+
+    $schedule = [];
+    foreach ($diasSemana as $dia) {
+        $schedule[$dia] = [
+            'manha' => $slotsManha,
+            'tarde' => $slotsTarde
+        ];
+    }
+
+    // Recupera as disciplinas vinculadas à turma
+    $disciplinas = Disciplina::whereHas('turmas', function($query) use ($turma_id) {
+        $query->where('turmas.id', $turma_id);
+    })->orderBy('carga_horaria_max', 'desc')->get();
+
+    // Agora, aloca as disciplinas nos slots de aula (não nos intervalos)
+    foreach ($disciplinas as $disciplina) {
+        $cargaHoraria = $disciplina->carga_horaria_max * 60; // carga horária em minutos
+        $ehArte = ($disciplina->nome === 'Arte');
+        // Se for Arte, o bloco é de 60 minutos; caso contrário, 90.
+        $tamanhoBloco = $ehArte ? 60 : 90;
+        
+        if ($ehArte) {
+            $alocado = false;
+            foreach ($diasSemana as $dia) {
+                // Tenta alocar na manhã
+                foreach ($schedule[$dia]['manha'] as &$slot) {
+                    if ($slot['tipo'] === 'aula' && $slot['conteudo'] === 'Livre') {
+                        $slot['conteudo'] = $disciplina->nome . " ({$slot['inicio']} - {$slot['fim']})";
+                        $alocado = true;
+                        break 2;
+                    }
+                }
+                // Se não alocar na manhã, tenta na tarde
+                foreach ($schedule[$dia]['tarde'] as &$slot) {
+                    if ($slot['tipo'] === 'aula' && $slot['conteudo'] === 'Livre') {
+                        $slot['conteudo'] = $disciplina->nome . " ({$slot['inicio']} - {$slot['fim']})";
+                        $alocado = true;
+                        break 2;
+                    }
+                }
+            }
+            if (!$alocado) continue;
+        } else {
+            // Para outras disciplinas, aloca blocos até que a carga horária seja consumida.
+            foreach ($diasSemana as $dia) {
+                foreach (['manha','tarde'] as $turno) {
+                    foreach ($schedule[$dia][$turno] as &$slot) {
+                        if ($slot['tipo'] === 'aula' && $slot['conteudo'] === 'Livre' && $cargaHoraria > 0) {
+                            $slot['conteudo'] = $disciplina->nome . " ({$slot['inicio']} - {$slot['fim']})";
+                            $cargaHoraria -= $tamanhoBloco;
+                        }
+                    }
+                    if ($cargaHoraria <= 0) break 2;
+                }
+            }
+        }
+    }
+
+    
+
+    return view('grade_aulas.create', compact('schedule', 'turma_id', 'diasSemana', 'disciplinas', 'recreiosTurma'));
 }
+
+
+
+
+
+
 
 public function store(Request $request)
 {

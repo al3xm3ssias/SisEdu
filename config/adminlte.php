@@ -369,6 +369,12 @@ return [
             'icon' => 'fas fa-chalkboard',
         ],
 
+        [
+            'text' => 'Intervalos',
+            'url'  => '/recreios',
+            'icon' => 'fas fa-bell',
+        ],
+
         
       
        

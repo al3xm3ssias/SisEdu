@@ -5,46 +5,75 @@
 @section('content')
 <div class="container">
     <h2>Montar Grade de Aulas</h2>
-    
     <form action="{{ route('grade_aulas.store') }}" method="POST">
         @csrf
-        <input type="hidden" name="turma_id" value="{{ $turma->id }}"> <!-- Campo oculto para enviar o ID da turma -->
-        
+        <input type="hidden" name="turma_id" value="{{ $turma_id }}">
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th rowspan="2">Horário</th>
-                    <th colspan="5" class="text-center">Dias da Semana</th>
-                </tr>
-                <tr>
-                    <th>Segunda</th>
-                    <th>Terça</th>
-                    <th>Quarta</th>
-                    <th>Quinta</th>
-                    <th>Sexta</th>
+                    <th>Horário de Início</th>
+                    <th>Horário de Fim</th>
+                    @foreach($diasSemana as $dia)
+                        <th>{{ $dia }}</th>
+                    @endforeach
                 </tr>
             </thead>
             <tbody>
-            @foreach($horarios as $index => $horario)
-                <tr>
-                    <td>{{ $horario['inicio'] }} - {{ $horario['fim'] }}</td>
-                    @for ($i = 0; $i < 5; $i++)
+                {{-- Definindo manualmente os horários dos blocos --}}
+                @for($i = 0; $i < 8; $i++) <!-- 8 blocos -->
+                    <tr>
                         <td>
-                            <select name="disciplinas[{{ $index }}][{{ $i }}]" class="form-control">
-                                <option value="">-</option>
-                                @foreach($disciplinas as $disciplina)
-                                    <option value="{{ $disciplina->id }}">{{ $disciplina->nome }}</option>
-                                @endforeach
-                            </select>
+                            <input type="time" name="schedule[{{ $i }}][inicio]" 
+                                   value="{{ old('schedule.'.$i.'.inicio') }}" 
+                                   class="form-control" required>
                         </td>
-                    @endfor
-                </tr>
-            @endforeach
+                        <td>
+                            <input type="time" name="schedule[{{ $i }}][fim]" 
+                                   value="{{ old('schedule.'.$i.'.fim') }}" 
+                                   class="form-control" required>
+                        </td>
+                        @foreach($diasSemana as $dia)
+                        <td>
+    {{-- Verificando se o bloco já possui disciplina ou intervalo --}}
+    @if(isset($schedule[$dia][$i]))
+        @if($schedule[$dia][$i]['tipo'] == 'intervalo')
+            {{-- Exibindo o intervalo --}}
+            @php
+                // Encontrar o intervalo correspondente para esse bloco
+                $intervalo = null;
+                foreach ($recreiosTurma as $recTurma) {
+                    if ($recTurma->inicio === $schedule[$dia][$i]['fim']) {
+                        $intervalo = $recTurma;
+                        break;
+                    }
+                }
+            @endphp
+
+            <input type="text" class="form-control" 
+                   value="{{ $intervalo ? $intervalo->nome : 'Intervalo' }}" 
+                   disabled>
+        @else
+            {{-- Seleção de disciplina --}}
+            <select name="schedule[{{ $dia }}][{{ $i }}][disciplina]" class="form-control">
+                <option value="Livre" @if($schedule[$dia][$i]['conteudo'] == 'Livre') selected @endif>Livre</option>
+                @foreach($disciplinas as $disciplina)
+                    <option value="{{ $disciplina->id }}" 
+                        @if(strpos($schedule[$dia][$i]['conteudo'], $disciplina->nome) !== false) selected @endif>
+                        {{ $disciplina->nome }}
+                    </option>
+                @endforeach
+            </select>
+        @endif
+    @else
+        -
+    @endif
+</td>
+                        @endforeach
+                    </tr>
+                @endfor
             </tbody>
         </table>
-        
         <button type="submit" class="btn btn-primary">Salvar</button>
-        <button type="reset" class="btn btn-secondary">Cancelar</button>
     </form>
 </div>
 @endsection
