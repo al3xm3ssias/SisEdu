@@ -12,6 +12,7 @@ use App\Models\Recreio;
 
 use \DateTime;
 use \DateInterval;
+use Carbon\Carbon;
 
 
 
@@ -28,7 +29,6 @@ class GradeAulaController extends Controller
     return view('grade_aulas.index', compact('turmas', 'grades'));
 }
 
-
 public function create(Request $request)
 {
     $turma_id = $request->query('turma_id');
@@ -36,164 +36,96 @@ public function create(Request $request)
     
     $diasSemana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
     
-    $blocos = [
-        'manha' => [],
-        'tarde' => []
-    ];
-    
-    // Recupera os recreios padrão
+    // Recupera todas as disciplinas da turma
+    $disciplinas = Disciplina::whereHas('turmas', function ($query) use ($turma_id) {
+        $query->where('turmas.id', $turma_id);
+    })->orderBy('nome', 'asc')->get();
+
+    // Recupera todos os recreios disponíveis
     $recreios = \App\Models\Recreio::all();
     
-    // Usando Query Builder para consultar a tabela recreio_turma
+    // Recupera os recreios específicos da turma
     $recreiosTurma = \DB::table('recreio_turma')
     ->join('recreios', 'recreio_turma.recreio_id', '=', 'recreios.id')
     ->select('recreios.nome', 'recreios.inicio', 'recreios.fim')
     ->where('recreio_turma.turma_id', $turma_id)
     ->get();
 
+// Formata os recreios para exibição
+$formatarHorarios = function ($recreios) {
+    return $recreios->map(function ($rec) {
+        return [
+            'nome' => $rec->nome,
+            'inicio' => (new \DateTime($rec->inicio))->format('H:i'),
+            'fim' => (new \DateTime($rec->fim))->format('H:i')
+        ];
+    });
+};
 
-    //dd($recreiosTurma);
+$recreiosTurma = $formatarHorarios($recreiosTurma);
+    $recreios = $formatarHorarios($recreios);
 
-
-    
-    // Função auxiliar para criar os slots
-    $criarSlots = function($blocosTurno, $recreios, $recreiosTurma) {
-        $slots = [];
-        foreach ($blocosTurno as $bloco) {
-            $inicio = $bloco['inicio'];
-            $duracao = $bloco['duracao'];
-            $fim = (new \DateTime($inicio))
-                ->add(new \DateInterval('PT' . $duracao . 'M'))
-                ->format('H:i');
-            $slots[] = [
-                'tipo' => 'aula',
-                'inicio' => $inicio,
-                'fim' => $fim,
-                'conteudo' => 'Livre'
-            ];
-            // Procura recreio que comece exatamente quando o bloco termina, dando prioridade ao recreio_turma
-            $recreioEncontrado = null;
-            foreach ($recreiosTurma as $recTurma) {
-                if ($recTurma->inicio === $fim) {
-                    $recreioEncontrado = $recTurma;
-                    break;
-                }
-            }
-            if (!$recreioEncontrado) {
-                foreach ($recreios as $rec) {
-                    if ($rec->inicio === $fim) {
-                        $recreioEncontrado = $rec;
-                        break;
-                    }
-                }
-            }
-            if ($recreioEncontrado) {
-                $slots[] = [
-                    'tipo' => 'intervalo',
-                    'inicio' => $recreioEncontrado->inicio,
-                    'fim' => $recreioEncontrado->fim,
-                    'conteudo' => $recreioEncontrado->nome
-                ];
-            }
-        }
-        return $slots;
-    };
-
-    $slotsManha = $criarSlots($blocos['manha'], $recreios, $recreiosTurma);
-    $slotsTarde = $criarSlots($blocos['tarde'], $recreios, $recreiosTurma);
-
+    // Inicializa a grade vazia para edição manual
     $schedule = [];
     foreach ($diasSemana as $dia) {
         $schedule[$dia] = [
-            'manha' => $slotsManha,
-            'tarde' => $slotsTarde
+            'manha' => [],
+            'tarde' => []
         ];
     }
 
-    // Recupera as disciplinas vinculadas à turma
-    $disciplinas = Disciplina::whereHas('turmas', function($query) use ($turma_id) {
-        $query->where('turmas.id', $turma_id);
-    })->orderBy('carga_horaria_max', 'desc')->get();
-
-    // Agora, aloca as disciplinas nos slots de aula (não nos intervalos)
-    foreach ($disciplinas as $disciplina) {
-        $cargaHoraria = $disciplina->carga_horaria_max * 60; // carga horária em minutos
-        $ehArte = ($disciplina->nome === 'Arte');
-        // Se for Arte, o bloco é de 60 minutos; caso contrário, 90.
-        $tamanhoBloco = $ehArte ? 60 : 90;
-        
-        if ($ehArte) {
-            $alocado = false;
-            foreach ($diasSemana as $dia) {
-                // Tenta alocar na manhã
-                foreach ($schedule[$dia]['manha'] as &$slot) {
-                    if ($slot['tipo'] === 'aula' && $slot['conteudo'] === 'Livre') {
-                        $slot['conteudo'] = $disciplina->nome . " ({$slot['inicio']} - {$slot['fim']})";
-                        $alocado = true;
-                        break 2;
-                    }
-                }
-                // Se não alocar na manhã, tenta na tarde
-                foreach ($schedule[$dia]['tarde'] as &$slot) {
-                    if ($slot['tipo'] === 'aula' && $slot['conteudo'] === 'Livre') {
-                        $slot['conteudo'] = $disciplina->nome . " ({$slot['inicio']} - {$slot['fim']})";
-                        $alocado = true;
-                        break 2;
-                    }
-                }
-            }
-            if (!$alocado) continue;
-        } else {
-            // Para outras disciplinas, aloca blocos até que a carga horária seja consumida.
-            foreach ($diasSemana as $dia) {
-                foreach (['manha','tarde'] as $turno) {
-                    foreach ($schedule[$dia][$turno] as &$slot) {
-                        if ($slot['tipo'] === 'aula' && $slot['conteudo'] === 'Livre' && $cargaHoraria > 0) {
-                            $slot['conteudo'] = $disciplina->nome . " ({$slot['inicio']} - {$slot['fim']})";
-                            $cargaHoraria -= $tamanhoBloco;
-                        }
-                    }
-                    if ($cargaHoraria <= 0) break 2;
-                }
-            }
-        }
-    }
-
-    
-
-    return view('grade_aulas.create', compact('schedule', 'turma_id', 'diasSemana', 'disciplinas', 'recreiosTurma'));
+    return view('grade_aulas.create', compact('schedule', 'turma_id', 'diasSemana', 'disciplinas', 'recreiosTurma', 'recreios'));
 }
-
-
-
-
 
 
 
 public function store(Request $request)
 {
-    // Recebe as disciplinas do formulário
-    $disciplinas = $request->input('disciplinas'); 
+    // Recebe os dados da grade de aula
+    $dados = $request->input('schedule'); // Array de horários por dia
+    
+    // Iterar sobre os dados para salvar a grade de aula
+    foreach ($dados as $dia => $horarios) {
+        foreach ($horarios as $horario) {
+            // Verifica se a chave 'disciplina' existe e é um número válido
+            if (isset($horario['disciplina']) && is_numeric($horario['disciplina'])) {
+                // Recupere o ID da disciplina
+                $disciplinaId = $horario['disciplina'];
 
-    if ($disciplinas) {
-        // Loop para iterar sobre os horários e disciplinas
-        foreach ($disciplinas as $horario => $dias) {
-            foreach ($dias as $dia => $disciplina_id) {
-                // Salvar a disciplina associada ao horário e ao dia
-                // Por exemplo, criar um registro de GradeAulaTurma:
+                // Verifique se a disciplina é 'Livre' (ID = 99)
+                if ($disciplinaId == 99) {
+                    // No caso de disciplina 'Livre', você pode deixar a disciplina como null ou associar com alguma lógica específica
+                    $disciplina = null;  // Ou algum comportamento específico para "Livre"
+                } else {
+                    // Caso contrário, busque a disciplina pelo ID
+                    $disciplina = Disciplina::find($disciplinaId);
+                }
 
-               // dd($request->input('turma_id'));
+                // Calculando a duração da aula
+                $horaInicio = Carbon::createFromFormat('H:i', $horario['inicio']);
+                $horaFim = Carbon::createFromFormat('H:i', $horario['fim']);
+                $duracao = $horaInicio->diffInMinutes($horaFim); // Calcula a diferença em minutos
+
+                // Agora você tem a disciplina, a duração e pode salvar a grade
                 GradeAula::create([
-                    'turma_id' => $request->input('turma_id'),  // Assumindo que você tem uma turma_id no request
-                    'horario' => $horario,
-                    'dia_semana' => $dia,
-                    'disciplina_id' => $disciplina_id,
+                    'turma_id' => $request->input('turma_id'), // Turma associada
+                    'disciplina_id' => $disciplina ? $disciplina->id : null, // ID da disciplina ou null para 'Livre'
+                    'dia_semana' => $dia, // Dia da semana
+                    'hora_inicio' => $horario['inicio'], // Hora de início
+                    'hora_fim' => $horario['fim'], // Hora de fim
+                    'duracao' => $duracao, // Duração da aula em minutos
                 ]);
             }
         }
-        return redirect()->route('grade_aulas.index')->with('success', 'Grade salva com sucesso!');
-    } else {
-        return back()->with('error', 'Por favor, selecione as disciplinas para todos os horários.');
     }
+
+    // Redireciona ou retorna uma resposta de sucesso
+    return redirect()->route('grade_aulas.index')->with('success', 'Grade de aulas salva com sucesso!');
 }
+
+
+
+
+
+
 }

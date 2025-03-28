@@ -111,6 +111,8 @@ Route::get('professores', [ProfessorController::class, 'index'])->name('professo
 
 Route::resource('grade_aulas', GradeAulaController::class);
 
+
+
 Route::resource('recreios', RecreioController::class);
 
 

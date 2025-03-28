@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
 
          $this->call(TurmaDisciplinaSeeder::class);
          
+         $this->call(RecreiosSeeder::class);
      }
 
 

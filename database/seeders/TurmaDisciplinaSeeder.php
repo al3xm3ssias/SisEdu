@@ -15,10 +15,10 @@ class TurmaDisciplinaSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         // Disciplinas específicas para INF IV e INF V
-        $disciplinasInfantil = [9, 4, 5, 2]; // Campos de Experiência, Ed. Física, Arte, LAC
+        $disciplinasInfantil = [9, 4, 5, 2, 99]; // Campos de Experiência, Ed. Física, Arte, LAC
 
         // Disciplinas para 1º ao 5º ano (todas exceto Campos de Experiência)
-        $disciplinasGerais = [1, 2, 3, 4, 5, 6, 7, 8, 10]; // Sem a 9 (Campos de Experiência)
+        $disciplinasGerais = [1, 2, 3, 4, 5, 6, 7, 8, 10, 99]; // Sem a 9 (Campos de Experiência)
 
         // Turmas INFANTIL IV e INFANTIL V
         foreach ([1, 2] as $turmaId) {
