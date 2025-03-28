@@ -18,6 +18,11 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="form-group">
+        <label for="tamanho_max">Quantidade de Blocos:</label>
+        <input type="number" name="tamanho_max" id="tamanho_max" class="form-control" value="{{ request('tamanho_max', 5) }}" min="1" required>
+    </div>
+
                     <button type="submit" class="btn btn-success">
                         <i class="fas fa-plus"></i> Incluir Grade
                     </button>
@@ -25,15 +30,15 @@
             </div>
         </div>
 
-        <!-- Cartão para exibir as grades existentes -->
+        <!-- Cartão para exibir as turmas com grades existentes -->
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Grades de Aulas</h3>
+                <h3 class="card-title">Turmas com Grades de Aulas</h3>
             </div>
             <div class="card-body">
-                @if($grades->isEmpty())
+                @if($turmasComGrade->isEmpty())
                     <div class="alert alert-warning" role="alert">
-                        Não há grades de aulas salvas.
+                        Não há turmas com grades de aulas salvas.
                     </div>
                 @else
                     <table class="table table-striped table-bordered">
@@ -44,7 +49,32 @@
                             </tr>
                         </thead>
                         <tbody>
-                          
+                            @foreach($turmasComGrade as $turma)
+                                <tr>
+                                    <td>{{ $turma->nome }}</td>
+                                    <td>
+                                        <!-- Botão para ver a grade -->
+                                        <a href="{{ route('grade_aulas.show', $turma->id) }}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </a>
+
+                                        <!-- Botão para editar a grade -->
+                                        <a href="{{ route('grade_aulas.edit', $turma->id) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a>
+
+                                        <!-- Botão para deletar a grade -->
+                                        <form action="{{ route('grade_aulas.destroy', $turma->id) }}" method="POST" style="display: inline;" 
+                                            onsubmit="return confirm('Tem certeza que deseja excluir esta grade?');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-trash"></i> Deletar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 @endif

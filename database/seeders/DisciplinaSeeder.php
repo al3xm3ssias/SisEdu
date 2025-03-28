@@ -34,7 +34,7 @@ class DisciplinaSeeder extends Seeder
         ['id' => 10, 'nome' => 'Geografia', 'carga_horaria_max' => 90],
         ['id' => 11, 'nome' => 'Inglês', 'carga_horaria_max' => 90], // Disciplina de Inglês
 
-        ['id' => 99, 'nome' => 'Livre', 'carga_horaria_max' => 9999], // Disciplina de Inglês
+        ['id' => 99, 'nome' => 'Livre', 'carga_horaria_max' => 9999], // Disciplina livre
     ]);
 }
 }

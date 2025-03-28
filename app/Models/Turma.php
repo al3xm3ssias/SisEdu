@@ -33,6 +33,12 @@ public function gradeAulas()
 {
     return $this->hasMany(GradeAula::class, 'turma_id');
 }
+
+// Definir o relacionamento com a GradeAula
+public function grades()
+{
+    return $this->hasMany(GradeAula::class);
+}
     
 }
 

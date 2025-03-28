@@ -110,6 +110,9 @@ Route::get('professores', [ProfessorController::class, 'index'])->name('professo
 
 
 Route::resource('grade_aulas', GradeAulaController::class);
+Route::get('grade_aulas/{turma}', [GradeAulaController::class, 'show'])->name('grade_aulas.show');
+
+
 
 
 

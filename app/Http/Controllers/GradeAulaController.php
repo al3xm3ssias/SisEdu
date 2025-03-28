@@ -18,22 +18,24 @@ use Carbon\Carbon;
 
 class GradeAulaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
 {
-    // Obtenha as grades, talvez incluindo a turma associada
-    $turmas = Turma::with('disciplinas')->get();
-    $grades = GradeAula::with('turma')->get();
 
-    //dd($turmas);
+    $tamanhoMax = $request->input('tamanho_max', 5); 
+    // Recupera as turmas que possuem pelo menos uma grade associada
+    $turmasComGrade = Turma::whereHas('grades')->get();
 
-    return view('grade_aulas.index', compact('turmas', 'grades'));
+    $turmas = Turma::with('disciplinas')->orderBy('nome', 'asc')->get();
+
+    // Passando a variável para a view corretamente
+    return view('grade_aulas.index', compact('turmasComGrade', 'turmas', 'tamanhoMax'));
 }
 
 public function create(Request $request)
 {
     $turma_id = $request->query('turma_id');
     $turma = Turma::findOrFail($turma_id);
-    
+    $tamanhoMax = $request->input('tamanho_max', 5);
     $diasSemana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
     
     // Recupera todas as disciplinas da turma
@@ -74,7 +76,7 @@ $recreiosTurma = $formatarHorarios($recreiosTurma);
         ];
     }
 
-    return view('grade_aulas.create', compact('schedule', 'turma_id', 'diasSemana', 'disciplinas', 'recreiosTurma', 'recreios'));
+    return view('grade_aulas.create', compact('schedule', 'turma_id', 'diasSemana', 'disciplinas', 'recreiosTurma', 'recreios' , 'tamanhoMax'));
 }
 
 
@@ -124,6 +126,66 @@ public function store(Request $request)
 }
 
 
+
+public function show(Request $request, $id)
+{
+    // Lógica para buscar os dados necessários
+    $turma = Turma::findOrFail($id);
+    $diasSemana = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+    
+    // Aqui você organiza a grade por dia da semana
+    $schedule = GradeAula::where('turma_id', $turma->id)
+                         ->orderBy('hora_inicio')
+                         ->get()
+                         ->groupBy('dia_semana'); // Agrupa as aulas por dia da semana
+
+    $disciplinas = Disciplina::all();
+    $recreiosTurma = $turma->recreios;
+
+    return view('grade_aulas.show', compact('turma', 'diasSemana', 'schedule', 'disciplinas', 'recreiosTurma'));
+}
+
+public function edit($id)
+{
+    $grade = GradeAula::findOrFail($id);
+    $turmas = Turma::all(); // Caso precise listar turmas na edição
+    $disciplinas = Disciplina::all(); // Caso precise listar disciplinas na edição
+    
+    return view('grade_aulas.edit', compact('grade', 'turmas', 'disciplinas'));
+}
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'turma_id' => 'required|exists:turmas,id',
+        'disciplina_id' => 'nullable|exists:disciplinas,id',
+        'dia_semana' => 'required|string',
+        'hora_inicio' => 'required|date_format:H:i',
+        'hora_fim' => 'required|date_format:H:i|after:hora_inicio',
+        'duracao' => 'required|integer|min:1',
+    ]);
+
+    $grade = GradeAula::findOrFail($id);
+    $grade->update($request->all());
+
+    return redirect()->route('grade_aulas.index')->with('success', 'Grade de aula atualizada com sucesso!');
+}
+
+public function destroy($turma_id)
+{
+    // Buscar todas as grades da turma
+    $grades = GradeAula::where('turma_id', $turma_id)->get();
+
+    // Verificar se existem registros antes de excluir
+    if ($grades->isEmpty()) {
+        return redirect()->route('grade_aulas.index')->with('warning', 'Nenhuma grade encontrada para essa turma.');
+    }
+
+    // Excluir todas as grades vinculadas à turma
+    GradeAula::where('turma_id', $turma_id)->delete();
+
+    return redirect()->route('grade_aulas.index')->with('success', 'Todas as grades da turma foram excluídas com sucesso!');
+}
 
 
 

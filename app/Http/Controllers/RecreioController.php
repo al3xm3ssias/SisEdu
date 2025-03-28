@@ -16,7 +16,7 @@ class RecreioController extends Controller
 
     public function create()
     {
-        $turmas = Turma::all();
+        $turmas = Turma::orderby('nome')->get();
         return view('recreios.create', compact('turmas'));
     }
 
