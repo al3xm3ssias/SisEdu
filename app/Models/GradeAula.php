@@ -11,7 +11,7 @@ class GradeAula extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['turma_id', 'hora_inicio', 'duracao', 'disciplina_id', 'hora_fim', 'dia_semana'];
+    protected $fillable = ['turma_id', 'hora_inicio', 'duracao', 'disciplina_id', 'hora_fim', 'dia_semana', 'recreio_turma_id'];
 /*
     public function turmaProfessorDisciplina()
     {

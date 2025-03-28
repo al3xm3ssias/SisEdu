@@ -26,7 +26,7 @@ class Turma extends Model
 
     public function recreios()
 {
-    return $this->belongsToMany(Recreio::class, 'recreio_turma');
+    return $this->belongsToMany(Recreio::class, 'recreio_turma', 'turma_id', 'recreio_id');
 }
 
 public function gradeAulas()
@@ -39,6 +39,7 @@ public function grades()
 {
     return $this->hasMany(GradeAula::class);
 }
+
     
 }
 

@@ -38,11 +38,14 @@
                                 <tbody>
                                     @for($i = 0; $i < $tamanhoMax; $i++)
                                         <tr id="row-{{ $dia }}-{{ $i }}">
-                                            <td>
-                                                <button type="button" class="btn btn-sm btn-success split-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </td>
+                                        <td>
+    <button type="button" class="btn btn-sm btn-success split-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
+        <i class="fas fa-plus"></i>
+    </button>
+    <button type="button" class="btn btn-sm btn-danger remove-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
+        <i class="fas fa-minus"></i>
+    </button>
+</td>
                                             <td>
                                                 <input type="time" name="schedule[{{ $dia }}][{{ $i }}][inicio]" value="{{ old('schedule.'.$dia.'.'.$i.'.inicio', $schedule[$dia][$i]['inicio'] ?? '') }}" class="form-control" required>
                                             </td>
@@ -50,15 +53,20 @@
                                                 <input type="time" name="schedule[{{ $dia }}][{{ $i }}][fim]" value="{{ old('schedule.'.$dia.'.'.$i.'.fim', $schedule[$dia][$i]['fim'] ?? '') }}" class="form-control" required>
                                             </td>
                                             <td>
-                                                <select name="schedule[{{ $dia }}][{{ $i }}][disciplina]" class="form-control">
+                                               <select name="schedule[{{ $dia }}][{{ $i }}][disciplina]" class="form-control">
                                                     <option value="99">Livre</option>
-                                                    @foreach($recreiosTurma as $recreio)
-                                                        <option value="Intervalo-{{ $recreio['nome'] }}">{{ $recreio['nome'] }} ({{ $recreio['inicio'] }} - {{ $recreio['fim'] }})</option>
+                                                    @foreach ($recreios as $recreio)
+                                                        <!-- Passando o ID do recreio_turma -->
+                                                        <option value="{{ $recreio['recreio_turma_id'] }}">{{ $recreio['nome'] }}</option>
+
+                                                        echo dd($recreio)
                                                     @endforeach
-                                                    @foreach($disciplinas as $disciplina)
+
+                                                    @foreach ($disciplinas as $disciplina)
                                                         <option value="{{ $disciplina->id }}">{{ $disciplina->nome }}</option>
                                                     @endforeach
                                                 </select>
+
                                             </td>
                                         </tr>
                                     @endfor
@@ -126,6 +134,14 @@
         });
     }
 
+    // Função para remover uma linha
+    function removerLinha(dia, index) {
+        let rowToDelete = document.getElementById(`row-${dia}-${index}`);
+        if (rowToDelete) {
+            rowToDelete.remove(); // Remove a linha
+        }
+    }
+
     // Monitorando a mudança nos horários de início e fim de cada dia
     const dias = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
     dias.forEach(dia => {
@@ -151,6 +167,15 @@
             let dia = this.getAttribute('data-dia');
             let index = parseInt(this.getAttribute('data-index'));
             clonarLinha(dia, index); // Chama a função de clonagem de linha
+        });
+    });
+
+    // Remover linha
+    document.querySelectorAll('.remove-block').forEach(button => {
+        button.addEventListener('click', function() {
+            let dia = this.getAttribute('data-dia');
+            let index = parseInt(this.getAttribute('data-index'));
+            removerLinha(dia, index); // Chama a função de remoção de linha
         });
     });
 });
