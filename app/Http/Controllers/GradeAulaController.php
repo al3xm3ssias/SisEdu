@@ -93,64 +93,56 @@ $formatarHorarios = function ($recreios) {
 
     return view('grade_aulas.create', compact('schedule', 'turma_id', 'diasSemana', 'disciplinas', 'recreiosTurma', 'recreios' , 'tamanhoMax'));
 }
-
 public function store(Request $request)
 {
-    // Recebe os dados da grade de aula
     $dados = $request->input('schedule'); // Array de horários por dia
-    
-   // dd($dados);
-    // Iterar sobre os dados para salvar a grade de aula
+    $turma_id = $request->input('turma_id');
+
     foreach ($dados as $dia => $horarios) {
         foreach ($horarios as $i => $horario) {
-            // Verifica se a chave 'disciplina' existe
             if (isset($horario['disciplina'])) {
                 $disciplinaId = $horario['disciplina'];
+                $isRecreio = isset($horario['is_recreio']) && $horario['is_recreio'] == 1;
 
-                // Verifique se é um intervalo (Livre ou Café da Manhã, Lanche da Tarde)
-                if ($disciplinaId == "99") {
-                    // Aqui você irá verificar se o intervalo existe na tabela recreios e recreio_turma
-                    // O ID do recreio pode vir no request, ou você pode buscar ele com base em algum critério
-                    $recreioTurmaId = $request->input('schedule.' . $dia . '.' . $i . '.recreio_turma_id');
+                if ($isRecreio) {
+                    // Lida com recreios
+                    $recreioTurmaId = $disciplinaId; 
 
-                    // Verifica se existe um recreio associado a turma
                     $recreioTurma = \DB::table('recreio_turma')
-                        ->where('turma_id', $request->input('turma_id'))
+                        ->where('turma_id', $turma_id)
                         ->where('recreio_id', $recreioTurmaId)
                         ->first();
 
-                    // Se o recreio_turma existe, cria a grade com recreio_turma_id
                     if ($recreioTurma) {
                         GradeAula::create([
-                            'turma_id' => $request->input('turma_id'),
-                            'disciplina_id' => null, // Para indicar que é intervalo
-                            'recreio_turma_id' => $recreioTurma->id, // Usando o ID da tabela recreio_turma
+                            'turma_id' => $turma_id,
+                            'disciplina_id' => null,
+                            'recreio_turma_id' => $recreioTurma->id,
                             'dia_semana' => $dia,
                             'hora_inicio' => $horario['inicio'],
                             'hora_fim' => $horario['fim'],
-                            'duracao' => Carbon::createFromFormat('H:i', $horario['inicio'])->diffInMinutes(Carbon::createFromFormat('H:i', $horario['fim'])),
+                            'duracao' => Carbon::createFromFormat('H:i', $horario['inicio'])
+                                ->diffInMinutes(Carbon::createFromFormat('H:i', $horario['fim'])),
                         ]);
                     } else {
-                        // Se o recreio não existir, pode lançar um erro ou um aviso
                         return redirect()->back()->with('error', 'Recreio não encontrado para a turma selecionada!');
                     }
                 } else {
-                    // Se for uma disciplina válida, cria a grade com a disciplina
+                    // Lida com aulas
                     $disciplina = Disciplina::find($disciplinaId);
 
-                    // Se encontrar a disciplina
                     if ($disciplina) {
                         GradeAula::create([
-                            'turma_id' => $request->input('turma_id'),
-                            'disciplina_id' => $disciplina->id, // Disciplina válida
-                            'recreio_turma_id' => null, // Nenhum recreio para disciplinas
+                            'turma_id' => $turma_id,
+                            'disciplina_id' => $disciplina->id,
+                            'recreio_turma_id' => null,
                             'dia_semana' => $dia,
                             'hora_inicio' => $horario['inicio'],
                             'hora_fim' => $horario['fim'],
-                            'duracao' => Carbon::createFromFormat('H:i', $horario['inicio'])->diffInMinutes(Carbon::createFromFormat('H:i', $horario['fim'])),
+                            'duracao' => Carbon::createFromFormat('H:i', $horario['inicio'])
+                                ->diffInMinutes(Carbon::createFromFormat('H:i', $horario['fim'])),
                         ]);
                     } else {
-                        // Se não encontrar a disciplina, pode lançar um erro ou um aviso
                         return redirect()->back()->with('error', 'Disciplina não encontrada!');
                     }
                 }
@@ -160,6 +152,7 @@ public function store(Request $request)
 
     return redirect()->route('grade_aulas.index')->with('success', 'Grade de aulas salva com sucesso!');
 }
+
 
 
 

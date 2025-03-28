@@ -26,52 +26,58 @@
                 <div class="tab-content mt-3" id="scheduleTabContent">
                     @foreach($diasSemana as $key => $dia)
                         <div class="tab-pane fade @if($key == 0) show active @endif" id="{{ $dia }}" role="tabpanel">
-                            <table class="table table-striped table-bordered text-center">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Ação</th>
-                                        <th>Início</th>
-                                        <th>Fim</th>
-                                        <th>Disciplina</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for($i = 0; $i < $tamanhoMax; $i++)
-                                        <tr id="row-{{ $dia }}-{{ $i }}">
-                                        <td>
-    <button type="button" class="btn btn-sm btn-success split-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
-        <i class="fas fa-plus"></i>
-    </button>
-    <button type="button" class="btn btn-sm btn-danger remove-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
-        <i class="fas fa-minus"></i>
-    </button>
-</td>
-                                            <td>
-                                                <input type="time" name="schedule[{{ $dia }}][{{ $i }}][inicio]" value="{{ old('schedule.'.$dia.'.'.$i.'.inicio', $schedule[$dia][$i]['inicio'] ?? '') }}" class="form-control" required>
-                                            </td>
-                                            <td>
-                                                <input type="time" name="schedule[{{ $dia }}][{{ $i }}][fim]" value="{{ old('schedule.'.$dia.'.'.$i.'.fim', $schedule[$dia][$i]['fim'] ?? '') }}" class="form-control" required>
-                                            </td>
-                                            <td>
-                                               <select name="schedule[{{ $dia }}][{{ $i }}][disciplina]" class="form-control">
-                                                    <option value="99">Livre</option>
-                                                    @foreach ($recreios as $recreio)
-                                                        <!-- Passando o ID do recreio_turma -->
-                                                        <option value="{{ $recreio['recreio_turma_id'] }}">{{ $recreio['nome'] }}</option>
+                        <table class="table table-striped table-bordered text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>Ação</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Disciplina</th>
+            <th>É Intervalo?</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for($i = 0; $i < $tamanhoMax; $i++)
+            <tr id="row-{{ $dia }}-{{ $i }}">
+                <td>
+                    <button type="button" class="btn btn-sm btn-success split-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-danger remove-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                </td>
+                <td>
+                    <input type="time" name="schedule[{{ $dia }}][{{ $i }}][inicio]" 
+                        value="{{ old('schedule.'.$dia.'.'.$i.'.inicio', $schedule[$dia][$i]['inicio'] ?? '') }}" 
+                        class="form-control" required>
+                </td>
+                <td>
+                    <input type="time" name="schedule[{{ $dia }}][{{ $i }}][fim]" 
+                        value="{{ old('schedule.'.$dia.'.'.$i.'.fim', $schedule[$dia][$i]['fim'] ?? '') }}" 
+                        class="form-control" required>
+                </td>
+                <td>
+                    <select name="schedule[{{ $dia }}][{{ $i }}][disciplina]" class="form-control disciplina-select" data-dia="{{ $dia }}" data-index="{{ $i }}">
+                        <option value="">Selecione</option>
+                        <option value="99">Livre</option>
+                        @foreach ($recreios as $recreio)
+                            <option value="{{ $recreio['recreio_turma_id'] }}" data-tipo="recreio">{{ $recreio['nome'] }}</option>
+                        @endforeach
+                        @foreach ($disciplinas as $disciplina)
+                            <option value="{{ $disciplina->id }}" data-tipo="aula">{{ $disciplina->nome }}</option>
+                        @endforeach
+                    </select>
+                </td>
+                <td>
+                    <input type="checkbox" class="is-recreio-checkbox" data-dia="{{ $dia }}" data-index="{{ $i }}" disabled>
+                    <input type="hidden" name="schedule[{{ $dia }}][{{ $i }}][is_recreio]" class="is-recreio-hidden" value="0">
+                </td>
+            </tr>
+        @endfor
+    </tbody>
+</table>
 
-                                                        echo dd($recreio)
-                                                    @endforeach
-
-                                                    @foreach ($disciplinas as $disciplina)
-                                                        <option value="{{ $disciplina->id }}">{{ $disciplina->nome }}</option>
-                                                    @endforeach
-                                                </select>
-
-                                            </td>
-                                        </tr>
-                                    @endfor
-                                </tbody>
-                            </table>
                         </div>
                     @endforeach
                 </div>
@@ -82,30 +88,27 @@
     </div>
 </div>
 
-<!-- Scripts  -->
+@endsection
+ 
+<!-- Scripts -->
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function() {
-    // Função para clonar os horários de um dia para os outros (só os horários de início e fim)
-    function clonarHorarios(diaOrigem) {
-        const dias = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+document.addEventListener("DOMContentLoaded", function() {
+    const dias = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
 
+    // Função para clonar horários de um dia para os outros
+    function clonarHorarios(diaOrigem) {
         dias.forEach(dia => {
             if (dia !== diaOrigem) {
-                // Para clonar o horário de início
-                document.querySelectorAll(`[name="schedule[${dia}][0][inicio]"]`).forEach((input, index) => {
-                    const origemInicio = document.querySelector(`[name="schedule[${diaOrigem}][${index}][inicio]"]`);
-                    if (origemInicio) {
-                        input.value = origemInicio.value;
-                    }
+                document.querySelectorAll(`[name="schedule[${diaOrigem}][0][inicio]"]`).forEach((origemInicio, index) => {
+                    let destinoInicio = document.querySelector(`[name="schedule[${dia}][${index}][inicio]"]`);
+                    if (destinoInicio) destinoInicio.value = origemInicio.value;
                 });
 
-                // Para clonar o horário de fim
-                document.querySelectorAll(`[name="schedule[${dia}][0][fim]"]`).forEach((input, index) => {
-                    const origemFim = document.querySelector(`[name="schedule[${diaOrigem}][${index}][fim]"]`);
-                    if (origemFim) {
-                        input.value = origemFim.value;
-                    }
+                document.querySelectorAll(`[name="schedule[${diaOrigem}][0][fim]"]`).forEach((origemFim, index) => {
+                    let destinoFim = document.querySelector(`[name="schedule[${dia}][${index}][fim]"]`);
+                    if (destinoFim) destinoFim.value = origemFim.value;
                 });
             }
         });
@@ -116,74 +119,76 @@
         let currentRow = document.getElementById(`row-${dia}-${index}`);
         if (!currentRow) return;
 
-        let newIndex = index + 1000; // Novo índice para a linha clonada
+        let newIndex = index + 1;
         let newRow = currentRow.cloneNode(true);
         newRow.id = `row-${dia}-${newIndex}`;
         newRow.querySelector('.split-block').setAttribute('data-index', newIndex);
+        newRow.querySelector('.remove-block').setAttribute('data-index', newIndex);
 
-        // Limpar valores dos inputs da nova linha
-        newRow.querySelectorAll("input, select").forEach(input => input.value = "");
-
-        // Inserir a nova linha abaixo da linha original
-        currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
-
-        // Garantir que os campos clonados sejam válidos e focáveis
         newRow.querySelectorAll("input, select").forEach(input => {
-            input.removeAttribute("readonly");
-            input.setAttribute("required", "required");
+            input.value = "";
+            input.setAttribute("data-index", newIndex);
         });
+
+        currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
     }
 
-    // Função para remover uma linha
+    // Função para remover uma linha (mas sempre mantendo pelo menos uma)
     function removerLinha(dia, index) {
-        let rowToDelete = document.getElementById(`row-${dia}-${index}`);
-        if (rowToDelete) {
-            rowToDelete.remove(); // Remove a linha
+        let rows = document.querySelectorAll(`[id^="row-${dia}-"]`);
+        if (rows.length > 1) {
+            let rowToDelete = document.getElementById(`row-${dia}-${index}`);
+            if (rowToDelete) rowToDelete.remove();
+        } else {
+            alert("Não é possível excluir todas as linhas. Pelo menos uma deve permanecer.");
         }
     }
 
-    // Monitorando a mudança nos horários de início e fim de cada dia
-    const dias = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
+    // Atribuir eventos aos inputs de horários
     dias.forEach(dia => {
-        const inicioInputs = document.querySelectorAll(`[name="schedule[${dia}][0][inicio]"]`);
-        const fimInputs = document.querySelectorAll(`[name="schedule[${dia}][0][fim]"]`);
-
-        inicioInputs.forEach((input, index) => {
-            input.addEventListener('change', function() {
-                clonarHorarios(dia); // Chama a função de clonagem de horários
-            });
-        });
-
-        fimInputs.forEach((input, index) => {
-            input.addEventListener('change', function() {
-                clonarHorarios(dia); // Chama a função de clonagem de horários
-            });
-        });
+        document.querySelectorAll(`[name="schedule[${dia}][0][inicio]"], [name="schedule[${dia}][0][fim]"]`)
+            .forEach(input => input.addEventListener('change', () => clonarHorarios(dia)));
     });
 
-    // Clonagem de linhas
-    document.querySelectorAll('.split-block').forEach(button => {
-        button.addEventListener('click', function() {
-            let dia = this.getAttribute('data-dia');
-            let index = parseInt(this.getAttribute('data-index'));
-            clonarLinha(dia, index); // Chama a função de clonagem de linha
-        });
+    // Eventos para clonar e remover linhas
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('split-block')) {
+            let dia = event.target.getAttribute('data-dia');
+            let index = parseInt(event.target.getAttribute('data-index'));
+            clonarLinha(dia, index);
+        }
+
+        if (event.target.classList.contains('remove-block')) {
+            let dia = event.target.getAttribute('data-dia');
+            let index = parseInt(event.target.getAttribute('data-index'));
+            removerLinha(dia, index);
+        }
     });
 
-    // Remover linha
-    document.querySelectorAll('.remove-block').forEach(button => {
-        button.addEventListener('click', function() {
-            let dia = this.getAttribute('data-dia');
-            let index = parseInt(this.getAttribute('data-index'));
-            removerLinha(dia, index); // Chama a função de remoção de linha
+    // Evento para atualizar o status de recreio
+    document.querySelectorAll('.disciplina-select').forEach(select => {
+        select.addEventListener('change', function() {
+            let dia = this.dataset.dia;
+            let index = this.dataset.index;
+            let selectedOption = this.options[this.selectedIndex];
+            let checkbox = document.querySelector(`.is-recreio-checkbox[data-dia="${dia}"][data-index="${index}"]`);
+            let hiddenField = document.querySelector(`.is-recreio-hidden[name="schedule[${dia}][${index}][is_recreio]"]`);
+
+            if (selectedOption.dataset.tipo === 'recreio') {
+                checkbox.checked = true;
+                checkbox.disabled = false;
+                hiddenField.value = 1;
+            } else {
+                checkbox.checked = false;
+                checkbox.disabled = true;
+                hiddenField.value = 0;
+            }
         });
     });
 });
+</script>
 
 
-</script>  
-
-@endsection
 
 @section('footer')
     <strong>Feito por Alex Messias <a href="https://adminlte.io">SisEdu</a>.</strong>
