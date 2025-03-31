@@ -26,58 +26,53 @@
                 <div class="tab-content mt-3" id="scheduleTabContent">
                     @foreach($diasSemana as $key => $dia)
                         <div class="tab-pane fade @if($key == 0) show active @endif" id="{{ $dia }}" role="tabpanel">
-                        <table class="table table-striped table-bordered text-center">
-    <thead class="table-dark">
-        <tr>
-            <th>Ação</th>
-            <th>Início</th>
-            <th>Fim</th>
-            <th>Disciplina</th>
-            <th>É Intervalo?</th>
-        </tr>
-    </thead>
-    <tbody>
-        @for($i = 0; $i < $tamanhoMax; $i++)
-            <tr id="row-{{ $dia }}-{{ $i }}">
-                <td>
-                    <button type="button" class="btn btn-sm btn-success split-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
-                        <i class="fas fa-plus"></i>
-                    </button>
-                    <button type="button" class="btn btn-sm btn-danger remove-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
-                        <i class="fas fa-minus"></i>
-                    </button>
-                </td>
-                <td>
-                    <input type="time" name="schedule[{{ $dia }}][{{ $i }}][inicio]" 
-                        value="{{ old('schedule.'.$dia.'.'.$i.'.inicio', $schedule[$dia][$i]['inicio'] ?? '') }}" 
-                        class="form-control" required>
-                </td>
-                <td>
-                    <input type="time" name="schedule[{{ $dia }}][{{ $i }}][fim]" 
-                        value="{{ old('schedule.'.$dia.'.'.$i.'.fim', $schedule[$dia][$i]['fim'] ?? '') }}" 
-                        class="form-control" required>
-                </td>
-                <td>
-                    <select name="schedule[{{ $dia }}][{{ $i }}][disciplina]" class="form-control disciplina-select" data-dia="{{ $dia }}" data-index="{{ $i }}">
-                        <option value="">Selecione</option>
-                        <option value="99">Livre</option>
-                        @foreach ($recreiosTurma as $recreio)
-                            <option value="{{ $recreio['recreio_turma_id'] }}" data-tipo="recreio">{{ $recreio['nome'] }}</option>
-                        @endforeach
-                        @foreach ($disciplinas as $disciplina)
-                            <option value="{{ $disciplina->id }}" data-tipo="aula">{{ $disciplina->nome }}</option>
-                        @endforeach
-                    </select>
-                </td>
-                <td>
-                    <input type="checkbox" class="is-recreio-checkbox" data-dia="{{ $dia }}" data-index="{{ $i }}" disabled>
-                    <input type="hidden" name="schedule[{{ $dia }}][{{ $i }}][is_recreio]" class="is-recreio-hidden" value="0">
-                </td>
-            </tr>
-        @endfor
-    </tbody>
-</table>
-
+                            <table class="table table-striped table-bordered text-center">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Ação</th>
+                                        <th>Início</th>
+                                        <th>Fim</th>
+                                        <th>Disciplina</th>
+                                        <th>É Intervalo?</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-{{ $dia }}">
+                                    @for($i = 0; $i < $tamanhoMax; $i++)
+                                        <tr id="row-{{ $dia }}-{{ $i }}">
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-success split-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-danger remove-block" data-dia="{{ $dia }}" data-index="{{ $i }}">
+                                                    <i class="fas fa-minus"></i>
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <input type="time" name="schedule[{{ $dia }}][{{ $i }}][inicio]" class="form-control" required>
+                                            </td>
+                                            <td>
+                                                <input type="time" name="schedule[{{ $dia }}][{{ $i }}][fim]" class="form-control" required>
+                                            </td>
+                                            <td>
+                                                <select name="schedule[{{ $dia }}][{{ $i }}][disciplina]" class="form-control disciplina-select" data-dia="{{ $dia }}" data-index="{{ $i }}">
+                                                    <option value="">Selecione</option>
+                                                    <option value="99">Livre</option>
+                                                    @foreach ($recreiosTurma as $recreio)
+                                                        <option value="{{ $recreio['recreio_turma_id'] }}" data-tipo="recreio">{{ $recreio['nome'] }}</option>
+                                                    @endforeach
+                                                    @foreach ($disciplinas as $disciplina)
+                                                        <option value="{{ $disciplina->id }}" data-tipo="aula">{{ $disciplina->nome }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="is-recreio-checkbox" data-dia="{{ $dia }}" data-index="{{ $i }}" disabled>
+                                                <input type="hidden" name="schedule[{{ $dia }}][{{ $i }}][is_recreio]" class="is-recreio-hidden" value="0">
+                                            </td>
+                                        </tr>
+                                    @endfor
+                                </tbody>
+                            </table>
                         </div>
                     @endforeach
                 </div>
@@ -89,110 +84,111 @@
 </div>
 
 @endsection
-
-
-
- 
-<!-- Scripts -->
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+@section('js')
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const dias = ['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta'];
-
-    // Função para clonar horários de um dia para os outros
-    function clonarHorarios(diaOrigem) {
-        dias.forEach(dia => {
-            if (dia !== diaOrigem) {
-                document.querySelectorAll(`[name="schedule[${diaOrigem}][0][inicio]"]`).forEach((origemInicio, index) => {
-                    let destinoInicio = document.querySelector(`[name="schedule[${dia}][${index}][inicio]"]`);
-                    if (destinoInicio) destinoInicio.value = origemInicio.value;
-                });
-
-                document.querySelectorAll(`[name="schedule[${diaOrigem}][0][fim]"]`).forEach((origemFim, index) => {
-                    let destinoFim = document.querySelector(`[name="schedule[${dia}][${index}][fim]"]`);
-                    if (destinoFim) destinoFim.value = origemFim.value;
-                });
-            }
-        });
-    }
-
-    // Função para clonar uma linha de horário
+    // Função para clonar uma linha
     function clonarLinha(dia, index) {
+        let tbody = document.getElementById(`tbody-${dia}`);
         let currentRow = document.getElementById(`row-${dia}-${index}`);
         if (!currentRow) return;
 
-        let newIndex = index + 1;
+        let newIndex = tbody.children.length;
         let newRow = currentRow.cloneNode(true);
         newRow.id = `row-${dia}-${newIndex}`;
-        newRow.querySelector('.split-block').setAttribute('data-index', newIndex);
-        newRow.querySelector('.remove-block').setAttribute('data-index', newIndex);
 
+        // Atualiza atributos e limpa valores
         newRow.querySelectorAll("input, select").forEach(input => {
+            let name = input.getAttribute("name");
+            if (name) {
+                input.setAttribute("name", name.replace(/\[\d+\]/, `[${newIndex}]`));
+            }
             input.value = "";
-            input.setAttribute("data-index", newIndex);
         });
 
-        currentRow.parentNode.insertBefore(newRow, currentRow.nextSibling);
+        let newSelect = newRow.querySelector('.disciplina-select');
+        let newCheckbox = newRow.querySelector('.is-recreio-checkbox');
+        let newHiddenField = newRow.querySelector('.is-recreio-hidden');
+
+        newSelect.setAttribute('data-index', newIndex);
+        newCheckbox.setAttribute('data-index', newIndex);
+        newHiddenField.setAttribute('name', `schedule[${dia}][${newIndex}][is_recreio]`);
+
+        // Remove eventos antigos e adiciona um novo evento ao select clonado
+        newSelect.addEventListener('change', function() {
+            atualizarCheckboxRecreio(dia, newIndex, newSelect, newCheckbox, newHiddenField);
+        });
+
+        newRow.querySelector('.split-block').setAttribute('data-index', newIndex);
+        newRow.querySelector('.remove-block').setAttribute('data-index', newIndex);
+        tbody.appendChild(newRow);
     }
 
-    // Função para remover uma linha (mas sempre mantendo pelo menos uma)
+    // Função para remover uma linha
     function removerLinha(dia, index) {
-        let rows = document.querySelectorAll(`[id^="row-${dia}-"]`);
-        if (rows.length > 1) {
-            let rowToDelete = document.getElementById(`row-${dia}-${index}`);
-            if (rowToDelete) rowToDelete.remove();
+        let tbody = document.getElementById(`tbody-${dia}`);
+        let rowToDelete = document.getElementById(`row-${dia}-${index}`);
+        if (tbody.children.length > 1 && rowToDelete) {
+            rowToDelete.remove();
         } else {
             alert("Não é possível excluir todas as linhas. Pelo menos uma deve permanecer.");
         }
     }
 
-    // Atribuir eventos aos inputs de horários
-    dias.forEach(dia => {
-        document.querySelectorAll(`[name="schedule[${dia}][0][inicio]"], [name="schedule[${dia}][0][fim]"]`)
-            .forEach(input => input.addEventListener('change', () => clonarHorarios(dia)));
-    });
+    // Atualiza o checkbox de recreio corretamente
+    function atualizarCheckboxRecreio(dia, index, select, checkbox, hiddenField) {
+        let selectedOption = select.options[select.selectedIndex];
 
-    // Eventos para clonar e remover linhas
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('split-block')) {
-            let dia = event.target.getAttribute('data-dia');
-            let index = parseInt(event.target.getAttribute('data-index'));
-            clonarLinha(dia, index);
+        if (selectedOption.dataset.tipo === 'recreio') {
+            checkbox.checked = true;
+            checkbox.disabled = false;
+            hiddenField.value = 1;
+        } else {
+            checkbox.checked = false;
+            checkbox.disabled = true;
+            hiddenField.value = 0;
         }
+    }
 
-        if (event.target.classList.contains('remove-block')) {
-            let dia = event.target.getAttribute('data-dia');
-            let index = parseInt(event.target.getAttribute('data-index'));
+    // Delegação de eventos para clonar e remover linhas
+    document.addEventListener('click', function(event) {
+        let button = event.target.closest('.split-block, .remove-block');
+        if (!button) return;
+        
+        let dia = button.getAttribute('data-dia');
+        let index = parseInt(button.getAttribute('data-index'));
+        
+        if (button.classList.contains('split-block')) {
+            clonarLinha(dia, index);
+        } else if (button.classList.contains('remove-block')) {
             removerLinha(dia, index);
         }
     });
 
-    // Evento para atualizar o status de recreio
-    document.querySelectorAll('.disciplina-select').forEach(select => {
-        select.addEventListener('change', function() {
-            let dia = this.dataset.dia;
-            let index = this.dataset.index;
-            let selectedOption = this.options[this.selectedIndex];
-            let checkbox = document.querySelector(`.is-recreio-checkbox[data-dia="${dia}"][data-index="${index}"]`);
-            let hiddenField = document.querySelector(`.is-recreio-hidden[name="schedule[${dia}][${index}][is_recreio]"]`);
+    // Delegação de eventos para atualizar o status de recreio
+    document.addEventListener('change', function(event) {
+        let select = event.target.closest('.disciplina-select');
+        if (!select) return;
+        
+        let dia = select.dataset.dia;
+        let index = select.dataset.index;
+        let checkbox = document.querySelector(`.is-recreio-checkbox[data-dia="${dia}"][data-index="${index}"]`);
+        let hiddenField = document.querySelector(`.is-recreio-hidden[name="schedule[${dia}][${index}][is_recreio]"]`);
 
-            if (selectedOption.dataset.tipo === 'recreio') {
-                checkbox.checked = true;
-                checkbox.disabled = false;
-                hiddenField.value = 1;
-            } else {
-                checkbox.checked = false;
-                checkbox.disabled = true;
-                hiddenField.value = 0;
-            }
+        atualizarCheckboxRecreio(dia, index, select, checkbox, hiddenField);
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function() {
+    let triggerTabList = [].slice.call(document.querySelectorAll('#scheduleTabs a'));
+    triggerTabList.forEach(function(tab) {
+        tab.addEventListener('click', function(event) {
+            event.preventDefault();
+            let tabTarget = new bootstrap.Tab(tab);
+            tabTarget.show();
         });
     });
 });
+
 </script>
-
-
-
-@section('footer')
-    <strong>Feito por Alex Messias <a href="https://adminlte.io">SisEdu</a>.</strong>
-@stop
+@endsection
