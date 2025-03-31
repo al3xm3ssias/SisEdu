@@ -8,49 +8,43 @@
 
 @section('content')
 
-    <table id="professoresTable" class="table table-striped table-bordered">
-
-        @if(session('success'))
+    @if(session('success'))
         <div class="alert alert-info alert-dismissible fade show" role="alert" style="position: absolute; top: 10px; right: 10px; z-index: 9999;">
             {{ session('success') }}
         </div>
         <script>
             setTimeout(function() {
                 $('.alert').alert('close');
-            }, 7000); // 7 segundos para desaparecer
+            }, 7000);
         </script>
-        @endif
+    @endif
 
-        <a href="{{ route('professores.create') }}" class="btn btn-primary mb-3">Adicionar Professor</a>
+    <a href="{{ route('professores.create') }}" class="btn btn-primary mb-3">Adicionar Professor</a>
 
+    <table id="professoresTable" class="table table-striped table-bordered">
         <thead>
             <tr>
                 <th>Nº</th>
                 <th>Nome</th>
-                <th>Disciplina</th>
-                <th>Turma</th>
-                <th>Ações</th>
+                <th>Ação</th>
             </tr>
         </thead>
         <tbody>
-    @foreach($professores as $index => $turmaProfessorDisciplina)
-        <tr>
-            <td>{{ $index + 1 }}</td> <!-- Contador de 1 até N -->
-            <td>{{ $turmaProfessorDisciplina->professor->nome }}</td>
-            <td>
-                @if($turmaProfessorDisciplina->disciplina)
-                    {{ $turmaProfessorDisciplina->disciplina->nome }}<br>
-                @else
-                    Nenhuma disciplina associada
-                @endif
-            </td>
-            <td>{{ $turmaProfessorDisciplina->turma->nome ?? 'Não atribuído' }}</td>
-            <td>
-                <a href="{{ route('professores.edit', $turmaProfessorDisciplina->professor->id) }}" class="btn btn-sm btn-warning">Editar</a>
-            </td>
-        </tr>
-    @endforeach
-</tbody>
+            @foreach($professores as $index => $professor)
+                <tr>
+                    <td>{{ $index + 1 }}</td> <!-- Contador automático -->
+                    <td>{{ $professor->nome }}</td>
+                    <td>
+                        <a href="{{ route('professores.show', $professor->id) }}" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i> Ver
+                        </a>
+                        <a href="{{ route('professores.edit', $professor->id) }}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-pencil-alt"></i> Editar
+                        </a>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
     </table>
 
 @stop
@@ -70,20 +64,12 @@
                 "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
                 "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
                 "sInfoFiltered": "(filtrado de _MAX_ registros totais)",
-                "sInfoPostFix": "",
                 "sSearch": "Pesquisar:",
-                "sUrl": "",
-                "sInfoThousands": ",",
-                "sLoadingRecords": "Carregando...",
                 "oPaginate": {
                     "sFirst": "Primeiro",
                     "sPrevious": "Anterior",
                     "sNext": "Próximo",
                     "sLast": "Último"
-                },
-                "oAria": {
-                    "sSortAscending": ": ativar para ordenar a coluna de forma ascendente",
-                    "sSortDescending": ": ativar para ordenar a coluna de forma descendente"
                 }
             },
             "paging": true,
@@ -97,14 +83,13 @@
         $(document).ready(function() {
             setTimeout(function() {
                 $(".alert").fadeOut("slow");
-            }, 2000);  // O alerta vai desaparecer após 2 segundos
+            }, 2000);
         });
     </script>
 @stop
 
 @section('footer')
     <strong>Feito por Alex Messias <a href="https://adminlte.io">SisEdu</a>.</strong>
-    
     <div class="float-right d-none d-sm-inline-block">
         <b>Version</b> 1.0.0
     </div>

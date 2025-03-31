@@ -108,6 +108,9 @@ Route::delete('turma-professor/{professor_id}/turma/{turma_id}',
 // Rota para listagem de professores
 Route::get('professores', [ProfessorController::class, 'index'])->name('professores.index');
 
+Route::get('/professores/{id}', [ProfessorController::class, 'show'])->name('professores.show');
+
+
 
 
 

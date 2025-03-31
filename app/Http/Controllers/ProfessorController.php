@@ -13,15 +13,12 @@ class ProfessorController extends Controller
   
     // Carregar os professores com suas turmas e disciplinas associadas
     public function index()
-{
-    // Carregar os professores com suas disciplinas e turmas associadas
-    $professores = TurmaProfessorDisciplinas::with(['professor', 'disciplina', 'turma'])->get();
-
-    // Verifique se os dados estão sendo carregados corretamente
-    //dd($professores);
-
-    return view('professores.index', compact('professores'));
-}
+    {
+        // Busca apenas professores que possuem disciplinas associadas
+        $professores = Professor::whereHas('disciplinas')->get();
+    
+        return view('professores.index', compact('professores'));
+    }
 
 
     public function create()
@@ -60,6 +57,12 @@ class ProfessorController extends Controller
         //dd($relacoes);
         return view('professores.edit', compact('professor', 'relacoes', 'turmas', 'disciplinas'));
     }
+
+    public function show($id)
+{
+    $professor = Professor::with(['disciplinas', 'disciplinas.turma'])->findOrFail($id);
+    return view('professores.show', compact('professor'));
+}
     
 
     
