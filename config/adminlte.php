@@ -380,6 +380,13 @@ return [
             'icon' => 'fas fa-hourglass-start',
         ],
 
+        [
+            'text' => 'Calendario',
+            'url'  => 'calendario',
+            'icon' => 'fas fa-calendar',
+        ],
+
+
         
       
        

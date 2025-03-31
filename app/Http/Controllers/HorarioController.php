@@ -32,7 +32,9 @@ class HorarioController extends Controller
      return view('calendario', compact('turmas', 'gradeAulas'));
 }
 
-    
+
+
+
 public function getHorarios($turmaId)
 {
     // Pegando o ID do ano letivo na sessão
@@ -52,7 +54,7 @@ public function getHorarios($turmaId)
     // Consultando as aulas da turma na grade
     $gradeAulas = GradeAula::with('disciplina', 'recreio', 'turma')
         ->where('turma_id', $turmaId)
-        ->where('ano_letivo_id', $anoLetivoId) // FILTRANDO PELO ANO LETIVO
+        ->where('ano_letivo_id', $anoLetivoId) // Filtrando pelo ano letivo
         ->get();
 
     $diasDaSemana = [
@@ -66,23 +68,24 @@ public function getHorarios($turmaId)
     $eventos = $gradeAulas->flatMap(function ($aula) use ($inicioAnoLetivo, $fimAnoLetivo, $diasDaSemana) {
         $eventos = [];
 
+        // Se o dia da semana for inválido, ignora essa entrada
         if (!isset($diasDaSemana[$aula->dia_semana])) {
-
-            //return ['erro']; // Ignora se o dia da semana não for válido
-            return response()->json(['error' => 'Ano letivo não encontrado'], 404);
-
+            return [];
         }
 
         $diaSemanaNumero = $diasDaSemana[$aula->dia_semana];
 
         // Encontrando a primeira ocorrência do dia da semana dentro do ano letivo
-        $dataInicio = $inicioAnoLetivo->copy()->next($diaSemanaNumero);
+        $dataInicio = $inicioAnoLetivo->copy();
+        while ($dataInicio->dayOfWeek !== $diaSemanaNumero) {
+            $dataInicio->addDay();
+        }
 
         while ($dataInicio <= $fimAnoLetivo) {
             $eventos[] = [
-                'title' => $aula->recreio ? 'Recreio' : ($aula->disciplina ? $aula->disciplina->nome : 'Sem disciplina'),
-                'start' => $dataInicio->format('Y-m-d') . ' ' . $aula->hora_inicio,
-                'end'   => $dataInicio->format('Y-m-d') . ' ' . $aula->hora_fim,
+                'title' => $aula->recreio ? $aula->recreio->nome : ($aula->disciplina ? $aula->disciplina->nome : 'Sem disciplina'),
+                'start' => $dataInicio->format('Y-m-d') . 'T' . $aula->hora_inicio,
+                'end'   => $dataInicio->format('Y-m-d') . 'T' . $aula->hora_fim,
                 'description' => $aula->recreio ? 'Intervalo' : 'Turma: ' . $aula->turma->nome,
             ];
 
@@ -90,12 +93,12 @@ public function getHorarios($turmaId)
         }
 
         return $eventos;
-
-        //return response()->json($eventos);
-
-        //dd($eventos);
     });
 
     return response()->json($eventos);
 }
+
+
+
+
 }

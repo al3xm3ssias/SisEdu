@@ -21,7 +21,10 @@
                     @endforeach
                 </select>
             </div>
+
             <div id="calendario"></div>
+
+          
         </div>
     </div>
 @stop
@@ -37,10 +40,25 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            let calendario = new FullCalendar.Calendar(document.getElementById('calendario'), {
+            let calendarioEl = document.getElementById('calendario');
+
+            // Criando o calendário com horários das 06:00 às 18:00
+              // Criando o calendário com botões e horários organizados
+              window.calendario = new FullCalendar.Calendar(calendarioEl, {
                 initialView: 'timeGridWeek',
                 locale: 'pt-br',
-                events: []
+                events: [],
+                slotMinTime: "06:00:00", // Início às 06h
+                slotMaxTime: "18:00:00", // Fim às 18h
+                slotDuration: "00:30:00", // Intervalo de 30 minutos
+                height: 750, // Altura fixa para evitar desproporção
+
+                // Configuração dos botões no cabeçalho
+                headerToolbar: {
+                    left: 'prev,next today',   // Botões de navegação
+                    center: 'title',          // Nome do mês/semana/dia
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay' // Opções de visualização
+                }
             });
 
             calendario.render();
@@ -55,13 +73,16 @@
                     });
                 }
             });
+
+           
+
         });
     </script>
 @stop
 
+
 @section('footer')
-    <strong>Feito por Alex Messias  <a href="https://adminlte.io">SisEdu</a>.</strong>
-    
+    <strong>Feito por Alex Messias <a href="https://adminlte.io">SisEdu</a>.</strong>
     <div class="float-right d-none d-sm-inline-block">
         <b>Version</b> 1.0.0
     </div>
