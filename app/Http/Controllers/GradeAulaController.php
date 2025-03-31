@@ -20,14 +20,19 @@ class GradeAulaController extends Controller
 {
     public function index(Request $request)
 {
+    $anoLetivoId = session('ano_letivo_id'); // Pegando o ano letivo da sessão
 
     $tamanhoMax = $request->input('tamanho_max', 5); 
-    // Recupera as turmas que possuem pelo menos uma grade associada
-    $turmasComGrade = Turma::whereHas('grades')->get();
 
+    // Recupera as turmas que possuem pelo menos uma grade associada ao ano letivo selecionado
+    $turmasComGrade = Turma::whereHas('grades', function ($query) use ($anoLetivoId) {
+        $query->where('ano_letivo_id', $anoLetivoId);
+    })->get();
+
+    // Filtra as turmas e suas disciplinas com base no ano letivo
     $turmas = Turma::with('disciplinas')->orderBy('nome', 'asc')->get();
 
-    // Passando a variável para a view corretamente
+    // Retorna a view passando os dados filtrados
     return view('grade_aulas.index', compact('turmasComGrade', 'turmas', 'tamanhoMax'));
 }
 
@@ -132,6 +137,7 @@ public function store(Request $request)
                             'dia_semana' => $dia,
                             'hora_inicio' => $horario['inicio'],
                             'hora_fim' => $horario['fim'],
+                            'ano_letivo_id' => session('ano_letivo_id'), // Pegando da sessão
                             'duracao' => Carbon::createFromFormat('H:i', $horario['inicio'])
                                 ->diffInMinutes(Carbon::createFromFormat('H:i', $horario['fim'])),
                         ]);
@@ -150,6 +156,7 @@ public function store(Request $request)
                             'dia_semana' => $dia,
                             'hora_inicio' => $horario['inicio'],
                             'hora_fim' => $horario['fim'],
+                            'ano_letivo_id' => session('ano_letivo_id'), // Pegando da sessão
                             'duracao' => Carbon::createFromFormat('H:i', $horario['inicio'])
                                 ->diffInMinutes(Carbon::createFromFormat('H:i', $horario['fim'])),
                         ]);

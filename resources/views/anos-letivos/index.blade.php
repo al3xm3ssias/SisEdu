@@ -2,9 +2,9 @@
 
 @section('title', 'Anos Letivos')
 
-@section('sidebar')
+@section('right_sidebar')
     <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
             📅 Ano Letivo: {{ \App\Models\AnoLetivo::find(session('ano_letivo_id'))->nome ?? 'Não definido' }}
         </a>
         <div class="dropdown-menu dropdown-menu-right">

@@ -28,5 +28,13 @@ public function turma()
     return $this->belongsTo(Turma::class, 'turma_id');
 }
 
+public function disciplina()
+{
+    return $this->belongsTo(Disciplina::class);
+}
     
+public function recreio()
+{
+    return $this->belongsTo(Recreio::class, 'recreio_turma_id');
+}
 }

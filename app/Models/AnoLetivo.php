@@ -14,7 +14,9 @@ class AnoLetivo extends Model
     protected $fillable = ['nome', 'inicio', 'fim']; // Ajuste conforme sua tabela
 
    
-    
-
+    public function gradeAulas()
+    {
+        return $this->hasMany(GradeAula::class); // Modifique se necessário
+    }
 
 }

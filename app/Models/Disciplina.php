@@ -23,6 +23,10 @@ class Disciplina extends Model
     return $this->belongsToMany(Turma::class, 'turma_disciplinas', 'disciplina_id', 'turma_id');
 }
 
+public function gradeAulas()
+{
+    return $this->hasMany(GradeAula::class);
+}
 
 
     
