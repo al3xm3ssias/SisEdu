@@ -46,7 +46,7 @@ public function create(Request $request)
 
     //$recreiosTurma = Recreio::findOrFail($turma_id);
     // Recupera todos os recreios disponíveis
-    $recreios = \App\Models\Recreio::all();
+    //$recreios = \App\Models\Recreio::all();
 
    //dd($recreios);
     
@@ -62,8 +62,8 @@ public function create(Request $request)
    // dd($recreiosTurma);
  
 // Formata os recreios para exibição, incluindo o recreio_turma_id
-$formatarHorarios = function ($recreios) {
-    return $recreios->map(function ($rec) {
+$formatarHorarios = function ($recreiosTurma) {
+    return $recreiosTurma->map(function ($rec) {
         return [
             'recreio_turma_id' => $rec->id, // Certifique-se de incluir o ID do recreio_turma
             'nome' => $rec->nome,
@@ -78,7 +78,7 @@ $formatarHorarios = function ($recreios) {
 
 
     $recreiosTurma = $formatarHorarios($recreiosTurma);
-    $recreios = $formatarHorarios($recreios);
+    //$recreios = $formatarHorarios($recreios);
 
     //dd($recreiosTurma);
 
@@ -90,13 +90,17 @@ $formatarHorarios = function ($recreios) {
             'tarde' => []
         ];
     }
+    
+    //dd($recreiosTurma, $recreios);
 
-    return view('grade_aulas.create', compact('schedule', 'turma_id', 'diasSemana', 'disciplinas', 'recreiosTurma', 'recreios' , 'tamanhoMax'));
+    return view('grade_aulas.create', compact('schedule', 'turma_id', 'diasSemana', 'disciplinas', 'recreiosTurma', 'tamanhoMax'));
 }
 public function store(Request $request)
 {
     $dados = $request->input('schedule'); // Array de horários por dia
     $turma_id = $request->input('turma_id');
+
+    //dd($request); 
 
     foreach ($dados as $dia => $horarios) {
         foreach ($horarios as $i => $horario) {
@@ -112,6 +116,13 @@ public function store(Request $request)
                         ->where('turma_id', $turma_id)
                         ->where('recreio_id', $recreioTurmaId)
                         ->first();
+
+
+                    
+                    //dd($turma_id); 
+
+
+                    //$recreioTurma =  $recreioTurmaId;
 
                     if ($recreioTurma) {
                         GradeAula::create([

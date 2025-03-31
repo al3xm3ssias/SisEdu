@@ -61,7 +61,7 @@
                     <select name="schedule[{{ $dia }}][{{ $i }}][disciplina]" class="form-control disciplina-select" data-dia="{{ $dia }}" data-index="{{ $i }}">
                         <option value="">Selecione</option>
                         <option value="99">Livre</option>
-                        @foreach ($recreios as $recreio)
+                        @foreach ($recreiosTurma as $recreio)
                             <option value="{{ $recreio['recreio_turma_id'] }}" data-tipo="recreio">{{ $recreio['nome'] }}</option>
                         @endforeach
                         @foreach ($disciplinas as $disciplina)

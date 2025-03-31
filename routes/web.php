@@ -17,6 +17,8 @@ use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\GradeAulaController;
 use App\Http\Controllers\DisciplinaHorarioController;
 use App\Http\Controllers\RecreioController;
+use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\AnoLetivoController;
 
 
 
@@ -118,6 +120,11 @@ Route::get('grade_aulas/{turma}', [GradeAulaController::class, 'show'])->name('g
 
 Route::resource('recreios', RecreioController::class);
 
+Route::resource('/anos-letivos', AnoLetivoController::class);
+Route::post('/anos-letivos/mudar', [AnoLetivoController::class, 'mudarAnoLetivo'])->name('anos-letivos.mudar');
 
 
+
+Route::get('/calendario', [HorarioController::class, 'index'])->name('calendario.index');
+Route::get('/calendario/horarios/{turma}', [HorarioController::class, 'getHorarios']);
 

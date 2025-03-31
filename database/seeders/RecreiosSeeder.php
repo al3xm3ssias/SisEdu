@@ -26,6 +26,13 @@ class RecreiosSeeder extends Seeder
             'fim' => '12:45:00',
         ]);
 
+
+        $lancheId = DB::table('recreios')->insertGetId([
+            'nome' => 'Lanche da Tarde',
+            'inicio' => '14:45:00',
+            'fim' => '15:00:00',
+        ]);
+
         // Associando os intervalos à turma de ID 7 na tabela 'recreio_turma'
         DB::table('recreio_turma')->insert([
             'recreio_id' => $cafeManhaId,
@@ -34,6 +41,11 @@ class RecreiosSeeder extends Seeder
 
         DB::table('recreio_turma')->insert([
             'recreio_id' => $almocoId,
+            'turma_id' => 7, // 5º ano
+        ]);
+
+        DB::table('recreio_turma')->insert([
+            'recreio_id' => $lancheId,
             'turma_id' => 7, // 5º ano
         ]);
     }
