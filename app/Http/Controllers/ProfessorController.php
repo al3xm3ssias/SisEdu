@@ -50,9 +50,9 @@ class ProfessorController extends Controller
         $turmas = Turma::all();
         $disciplinas = Disciplina::all();
         // Buscar todas as turmas e disciplinas associadas ao professor
-        $relacoes = TurmaProfessorDisciplinas::where('professor_id', $professor->id)
+       $relacoes = TurmaProfessorDisciplinas::where('professor_id', $professor->id)
             ->with(['turma', 'disciplina']) // Certifique-se de ter esses relacionamentos no modelo
-            ->get();
+            ->get(); 
         
         //dd($relacoes);
         return view('professores.edit', compact('professor', 'relacoes', 'turmas', 'disciplinas'));
@@ -60,8 +60,15 @@ class ProfessorController extends Controller
 
     public function show($id)
 {
-    $professor = Professor::with(['disciplinas', 'disciplinas.turma'])->findOrFail($id);
-    return view('professores.show', compact('professor'));
+    // Busca o professor pelo ID
+    $professor = Professor::findOrFail($id);
+
+    // Busca todas as relações específicas de professor, turma e disciplina
+    $relacoes = TurmaProfessorDisciplinas::where('professor_id', $id)
+        ->with(['turma', 'disciplina']) 
+        ->get();
+
+    return view('professores.show', compact('professor', 'relacoes'));
 }
     
 

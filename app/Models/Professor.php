@@ -40,5 +40,13 @@ public function turmasDisciplinas()
 {
     return $this->hasMany(TurmaProfessorDisciplinas::class);
 }
+
+public function turma()
+{
+    return $this->belongsTo(Turma::class, 'turma_id');
+}
+
+
+
 }
 

@@ -50,24 +50,25 @@
 
                                     <!-- Loop para os intervalos -->
                                     @foreach($recreiosTurma as $recreio)
-                                        @php
-                                            $intervalo = "Intervalo-" . $recreio['nome'];
-                                        @endphp
-                                        <option value="{{ $intervalo }}" 
-                                                @if($gradeAula->recreio_turma_id == $recreio->id) selected @endif>
-                                            {{ $recreio['nome'] }} ({{ $recreio['inicio'] }} - {{ $recreio['fim'] }})
-                                        </option>
-                                    @endforeach
+    @php
+        // Criando o valor do recreio com o prefixo "Intervalo-"
+        $intervalo = "Intervalo-" . $recreio['nome'];
+    @endphp
+    <option value="{{ $intervalo }}" 
+            @if($gradeAula->recreio_turma_id == $intervalo) selected @endif>
+        {{ $recreio['nome'] }} ({{ $recreio['inicio'] }} - {{ $recreio['fim'] }})
+    </option>
+@endforeach
 
-                                    <!-- Loop para as disciplinas -->
-                                    @foreach($disciplinas as $disciplina)
-                                        @if($disciplina->id != 99) <!-- Verifica se a disciplina não é "Livre" -->
-                                            <option value="{{ $disciplina->id }}" 
-                                                    @if($gradeAula->disciplina_id == $disciplina->id) selected @endif>
-                                                {{ $disciplina->nome }}
-                                            </option>
-                                        @endif
-                                    @endforeach
+<!-- Loop para as disciplinas -->
+@foreach($disciplinas as $disciplina)
+    @if($disciplina->id != 99) <!-- Verifica se a disciplina não é "Livre" -->
+        <option value="{{ $disciplina->id }}" 
+                @if($gradeAula->disciplina_id == $disciplina->id) selected @endif>
+            {{ $disciplina->nome }}
+        </option>
+    @endif
+@endforeach
                                 </select>
                             </td>
                         </tr>

@@ -48,10 +48,20 @@
                                                 </button>
                                             </td>
                                             <td>
-                                                <input type="time" name="schedule[{{ $dia }}][{{ $i }}][inicio]" class="form-control" required>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                                    <input type="time" name="schedule[{{ $dia }}][{{ $i }}][inicio]" 
+                                                        class="form-control inicio" data-index="{{ $dia }}-{{ $i }}" 
+                                                        value="08:00" placeholder="Hora de início">
+                                                </div>
                                             </td>
                                             <td>
-                                                <input type="time" name="schedule[{{ $dia }}][{{ $i }}][fim]" class="form-control" required>
+                                                <div class="input-group">
+                                                    <span class="input-group-text"><i class="fas fa-clock"></i></span>
+                                                    <input type="time" name="schedule[{{ $dia }}][{{ $i }}][fim]" 
+                                                        class="form-control fim" data-index="{{ $dia }}-{{ $i }}" 
+                                                        value="09:00" placeholder="Hora de término">
+                                                </div>
                                             </td>
                                             <td>
                                                 <select name="schedule[{{ $dia }}][{{ $i }}][disciplina]" class="form-control disciplina-select" data-dia="{{ $dia }}" data-index="{{ $i }}">
@@ -190,5 +200,35 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('.inicio').forEach(input => {
+            input.addEventListener('change', function () {
+                let index = this.getAttribute('data-index');
+                let inicio = this.value;
+                let fimInput = document.querySelector('.fim[data-index="' + index + '"]');
+
+                if (fimInput.value < inicio) {
+                    fimInput.value = inicio; // Ajusta o horário de fim automaticamente
+                    alert("O horário de fim não pode ser menor que o início!");
+                }
+            });
+        });
+
+        document.querySelectorAll('.fim').forEach(input => {
+            input.addEventListener('change', function () {
+                let index = this.getAttribute('data-index');
+                let inicio = document.querySelector('.inicio[data-index="' + index + '"]').value;
+                let fim = this.value;
+
+                if (fim < inicio) {
+                    this.value = inicio; // Impede que o usuário selecione um horário inválido
+                    alert("O horário de fim deve ser maior que o início!");
+                }
+            });
+        });
+    });
 </script>
 @endsection

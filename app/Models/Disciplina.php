@@ -28,6 +28,11 @@ public function gradeAulas()
     return $this->hasMany(GradeAula::class);
 }
 
+public function turma()
+{
+    return $this->belongsTo(Turma::class, 'turma_id');
+}
+
 
     
 }

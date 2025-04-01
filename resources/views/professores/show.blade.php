@@ -13,20 +13,21 @@
             <h3 class="card-title">Informações do Professor</h3>
         </div>
         <div class="card-body">
-            <p><strong>ID:</strong> {{ $professor->id }}</p>
             <p><strong>Nome:</strong> {{ $professor->nome }}</p>
 
             <h4>Disciplinas e Turmas:</h4>
             <ul>
-                @forelse($professor->disciplinas as $disciplina)
-                    <li>
-                        <strong>Disciplina:</strong> {{ $disciplina->nome }}  
-                        - <strong>Turma:</strong> {{ $disciplina->turma->nome ?? 'Não atribuída' }}
-                    </li>
-                @empty
-                    <p>Este professor não tem disciplinas vinculadas.</p>
-                @endforelse
-            </ul>
+           <h4>Disciplinas e Turmas:</h4>
+<ul>
+    @forelse($relacoes as $relacao)
+        <li>
+            <strong>Disciplina:</strong> {{ $relacao->disciplina->nome }}  
+            - <strong>Turma:</strong> {{ $relacao->turma->nome }}
+        </li>
+    @empty
+        <p>Este professor não tem disciplinas vinculadas.</p>
+    @endforelse
+</ul>
 
             <a href="{{ route('professores.index') }}" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Voltar

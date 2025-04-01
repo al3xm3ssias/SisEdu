@@ -29,13 +29,12 @@ class AppServiceProvider extends ServiceProvider
        Funcionario::observe(FuncionarioObserver::class);
 
        GradeAula::observe(GradeAulaObserver::class);
-
-
-      /* view()->composer('*', function ($view) {
+/*
+       view()->composer('*', function ($view) {
         if (!Session::has('ano_letivo_id')) {
             $anoAtivo = AnoLetivo::latest()->first();
             Session::put('ano_letivo_id', $anoAtivo->id ?? null);
         }
-    }); */
+    });  */
     }
 }
