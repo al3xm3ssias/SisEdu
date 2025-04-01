@@ -340,13 +340,13 @@ class ComposerStaticInitd97e81e02db2f39f2bf1f1a3f5ca3223
         ),
         'Spatie\\LaravelIgnition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
-            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
+            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
+            1 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
         ),
         'Spatie\\Ignition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/ignition/src',
-            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
+            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
+            1 => __DIR__ . '/..' . '/spatie/ignition/src',
         ),
         'Spatie\\FlareClient\\' => 
         array (
@@ -595,6 +595,7 @@ class ComposerStaticInitd97e81e02db2f39f2bf1f1a3f5ca3223
         'App\\Console\\Commands\\CreateCrudViews' => __DIR__ . '/../..' . '/app/Console/Commands/CreateCrudViews.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Http\\Controllers\\AnoLetivoController' => __DIR__ . '/../..' . '/app/Http/Controllers/AnoLetivoController.php',
         'App\\Http\\Controllers\\AulaController' => __DIR__ . '/../..' . '/app/Http/Controllers/AulaController.php',
         'App\\Http\\Controllers\\CienciaController' => __DIR__ . '/../..' . '/app/Http/Controllers/CienciaController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
@@ -604,6 +605,7 @@ class ComposerStaticInitd97e81e02db2f39f2bf1f1a3f5ca3223
         'App\\Http\\Controllers\\FuncionarioController' => __DIR__ . '/../..' . '/app/Http/Controllers/FuncionarioController.php',
         'App\\Http\\Controllers\\GradeAulaController' => __DIR__ . '/../..' . '/app/Http/Controllers/GradeAulaController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
+        'App\\Http\\Controllers\\HorarioController' => __DIR__ . '/../..' . '/app/Http/Controllers/HorarioController.php',
         'App\\Http\\Controllers\\ProfessorController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfessorController.php',
         'App\\Http\\Controllers\\RecreioController' => __DIR__ . '/../..' . '/app/Http/Controllers/RecreioController.php',
         'App\\Http\\Controllers\\TurmaController' => __DIR__ . '/../..' . '/app/Http/Controllers/TurmaController.php',
@@ -618,10 +620,12 @@ class ComposerStaticInitd97e81e02db2f39f2bf1f1a3f5ca3223
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\ValidateSignature' => __DIR__ . '/../..' . '/app/Http/Middleware/ValidateSignature.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Models\\AnoLetivo' => __DIR__ . '/../..' . '/app/Models/AnoLetivo.php',
         'App\\Models\\Cargo' => __DIR__ . '/../..' . '/app/Models/Cargo.php',
         'App\\Models\\Disciplina' => __DIR__ . '/../..' . '/app/Models/Disciplina.php',
         'App\\Models\\Funcionario' => __DIR__ . '/../..' . '/app/Models/Funcionario.php',
         'App\\Models\\GradeAula' => __DIR__ . '/../..' . '/app/Models/GradeAula.php',
+        'App\\Models\\Horario' => __DIR__ . '/../..' . '/app/Models/Horario.php',
         'App\\Models\\Professor' => __DIR__ . '/../..' . '/app/Models/Professor.php',
         'App\\Models\\Recreio' => __DIR__ . '/../..' . '/app/Models/Recreio.php',
         'App\\Models\\RecreioTurma' => __DIR__ . '/../..' . '/app/Models/RecreioTurma.php',
@@ -630,6 +634,7 @@ class ComposerStaticInitd97e81e02db2f39f2bf1f1a3f5ca3223
         'App\\Models\\Turno' => __DIR__ . '/../..' . '/app/Models/Turno.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Observers\\FuncionarioObserver' => __DIR__ . '/../..' . '/app/Observers/FuncionarioObserver.php',
+        'App\\Observers\\GradeAulaObserver' => __DIR__ . '/../..' . '/app/Observers/GradeAulaObserver.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',

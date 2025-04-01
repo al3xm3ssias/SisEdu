@@ -23,7 +23,7 @@ class HorarioController extends Controller
 {
     // Consultando a tabela grade_aulas e incluindo a turma e a disciplina
      // Consultando as turmas
-     $turmas = Turma::all();  // Pode ser filtrado de acordo com suas necessidades
+     $turmas = Turma::orderBy('nome', 'asc')->get();  // Pode ser filtrado de acordo com suas necessidades
     
      // Consultando as aulas (apenas para a exibição inicial sem filtro)
      $gradeAulas = GradeAula::with('turma', 'disciplina')->orderBy('dia_semana')->get();
