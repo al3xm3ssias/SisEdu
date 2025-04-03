@@ -34,6 +34,18 @@ class DatabaseSeeder extends Seeder
          $this->call(TurmaDisciplinaSeeder::class);
          
          $this->call(RecreiosSeeder::class);
+
+
+
+
+
+         $this->call([
+            AdminUserSeeder::class,
+            ProfessorSeeder::class,
+            DiretorSeeder::class,
+            EscriturarioSeeder::class,
+            PedagogaSeeder::class,
+        ]);
      }
 
 

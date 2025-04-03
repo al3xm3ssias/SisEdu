@@ -1,35 +1,23 @@
-@extends('adminlte::page')
-
-@section('title', 'Tela Inicial')
-
-@section('content_header')
-    <h1>Bem-vindo ao Sistema!</h1>
-@stop
+@extends('layouts.app')
 
 @section('content')
-    <div class="card">
-        <div class="card-header">
-            <h3>Informações importantes</h3>
-        </div>
-        <div class="card-body">
-            <p>Esta é a tela inicial do seu sistema. Aqui você pode acessar todas as funcionalidades e acompanhar o andamento do seu trabalho.</p>
-            <p>Para começar, clique nos itens do menu lateral.</p>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">{{ __('Dashboard') }}</div>
+
+                <div class="card-body">
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    {{ __('You are logged in!') }}
+                </div>
+            </div>
         </div>
     </div>
-@stop
-
-@section('css')
-    <link rel="stylesheet" href="/css/admin_custom.css">
-@stop
-
-@section('js')
-    <script> console.log('Tela inicial carregada!'); </script>
-@stop
-
-@section('footer')
-    <strong>Feito por Alex Messias  <a href="https://adminlte.io">SisEdu</a>.</strong>
-    
-    <div class="float-right d-none d-sm-inline-block">
-        <b>Version</b> 1.0.0
-    </div>
-@stop
+</div>
+@endsection
