@@ -31,3 +31,13 @@
 @section('js')
     <script> console.log('Página de download CSV!'); </script>
 @stop
+
+
+@section('footer')
+    <strong>Feito por Alex Messias  <a href="https://adminlte.io">SisEdu</a>.</strong>
+    
+    <div class="float-right d-none d-sm-inline-block">
+        <b>Version</b> 1.0.0
+    </div>
+@stop
+

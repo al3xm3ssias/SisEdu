@@ -44,3 +44,12 @@
         <button type="submit" class="btn btn-warning">Atualizar</button>
     </form>
 @endsection
+
+@section('footer')
+    <strong>Feito por Alex Messias  <a href="https://adminlte.io">SisEdu</a>.</strong>
+    
+    <div class="float-right d-none d-sm-inline-block">
+        <b>Version</b> 1.0.0
+    </div>
+@stop
+
